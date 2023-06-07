@@ -157,9 +157,8 @@ def strToDict():
 # 10函数，判断组元是否在化合物原子组成json数据库中，返回更新后的化合物原子组成字典,以及筛选出的所有输入的分子式列表
 # atomicMassSingleDict, 相对原子质量字典数据库
 # atomDict,json数据库中的原子组成字典
-# elementDict，输入的组元组成字典，考虑了单质和化合物共存体系并分开讨论。
-# elementDict类似于{'Si': '90', 'B': '10','CaO':'16','SiO2':'16'}，elementDict字典可以通过05 函数 strToDict() 返回。
-# elementDict其实就是手动输入的混合体系组成，可能有单质，也可能有化合物，化合物中部分的原子组成可能不存在于atomDict中，因此10函数里通过调用chemicalsSplit来手动输入。
+# elementDict，输入的组元组成字典，考虑了单质和化合物共存体系并分开讨论。elementDict类似于{'Si': '90', 'B': '10','CaO':'16','SiO2':'16'}，elementDict字典可以通过05 函数 strToDict() 返回。
+# elementDict其实就是手动输入的混合体系组成，可能有单质，也可能有化合物，化合物中部分的原子组成可能不存在于atomDict中，因此10函数里通过调用03函数chemicalsSplit来手动输入（手动输入格式'Si-1-O-2,Ca-1-O-1,B-2-O-3'），并对atomDict数据库进行更新。
 def atomMakeupDict(atomicMassSingleDict,DBfilename,elementDict):   # 输入的3个字典分别是原子质量字典，化合物原子组成json字典，输入的字典
     '''
     该函数有3个形参，分别为输入的组元组成字典，json原子组成数据库文件名，一个相对原子质量字典数据库
