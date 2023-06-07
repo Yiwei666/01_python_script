@@ -808,11 +808,12 @@ if __name__ == '__main__':
         2= pureDensitySolidDict                (单质密度数据库，适用于熔体体系中含有H,N,O,F,Cl,Ar等非金属元素体系)，非金属元素的密度基于氧化物密度倒推校正获得，暂不完善
     
         3= pureSolidOxideDensityDict           (纯固态氧化物密度数据库)，参考手册 The Oxide Handbook，HRC等
-        4= pureLiquidOxideDensityFactsageDict  (纯液态氧化物密度数据库), 源于factsage倒退修正,1800k,数据库位于json文件中
+        4= pureLiquidOxideDensityFactsageDict  (纯液态氧化物密度数据库), 源于factsage倒退修正,1800k，数据库位于json文件中
         5= pureOxideDensityMSDict              (纯固态氧化物密度数据库),参考 Material Project晶体结构数据库
     
         6= mixOxideSimpleSubstanceDensityDict  (金属和氧化物混合体系密度数据库，适合两相混合体系计算，参考1和4)，推荐使用该数据库
-        注意：合金混合体系相对分子质量计算和Factsage密度计算可以任选1和2数据库,单质和化合物混合体系使用数据库6, 数据库5暂时不要用
+        注意：合金混合体系相对分子质量计算和Factsage密度计算可以任选1和2数据库,单质和化合物混合体系使用数据库6, 数据库5暂时为空不要用
+              数据库4是 对应于 49_[扩展-2化合物密度数据库]单质或化合物或多相混合体系密度计算.json。
               """)
         databaseChoice = int(input())
     
