@@ -60,6 +60,16 @@
 ```
 
 
+- **48_[类]cell文件转data文件.py**
+```
+  本脚本的功能如下:
+      01: Material Studio分数坐标cell文件转 Multiwfn标准格式的xyz笛卡尔坐标文件
+      02: Material Studio分数坐标cell文件转 lammps标准格式的data结构文件
+      
+      -1: 测试
+```
+
+
 - **42_[扩展]化合物各类原子数统计.py** 是 **42_化合物各类原子数统计.py 升级版本**
 
 
