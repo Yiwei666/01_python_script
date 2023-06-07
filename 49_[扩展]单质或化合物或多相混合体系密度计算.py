@@ -73,7 +73,10 @@ def dumpData(filename,writenData):                      # 将数据从内存写�
     
 
 
-# 03函数，获取分子式的原子组成，返回一个分子的组成字典
+# 03函数，获取分子式的原子组成，返回一个分子的组成字典，即手动录入原子组成
+# 函数传入 missMoleList = ['CaO','SiO2','B2O3'] , 函数内提示输入 chemString = 'Si-1-O-2,Ca-1-O-1,B-2-O-3'
+# 返回 chemDict = {'SiO2': {'Si': '1', 'O': '2', 'total': 3}, 'CaO': {'Ca': '1', 'O': '1', 'total': 2}, 'B2O3': {'B': '2', 'O': '3', 'total': 5}}
+
 def chemicalsSplit(missMoleList):   # 传入需要添加化合物组成的列表，chemString = 'Si-1-O-2,Ca-1-O-1,B-2-O-3'
     '''
     missMoleList形参是一个分子式列表，该函数会提示输入这些分子式的详细原子组成，如 Si-1-O-2,Ca-1-O-1
