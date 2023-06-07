@@ -30,7 +30,14 @@
 - **42_[扩展]化合物各类原子数统计.py** 是 42_化合物各类原子数统计.py 升级版本
 -  38_单质或化合物或多相混合体系密度计算.py
 ```
-
+请选择单质数据库，1 2, or 3?  
+1= pureDensityGasDict                  (单质密度数据库，适用于合金熔体体系，暂不能计算含有H,N,O,F,Cl,Ar等元素的混合体系密度),
+2= pureDensitySolidDict                (单质密度数据库，适用于熔体体系中含有H,N,O,F,Cl,Ar等非金属元素体系)，非金属元素的密度基于氧化物密度倒推校正获得，暂不完善
+3= pureSolidOxideDensityDict           (纯固态氧化物密度数据库)，参考手册 The Oxide Handbook，HRC等
+4= pureLiquidOxideDensityFactsageDict  (纯液态氧化物密度数据库), 源于factsage倒退修正,1800k
+5= pureOxideDensityMSDict              (纯固态氧化物密度数据库),参考 Material Project晶体结构数据库
+6= mixOxideSimpleSubstanceDensityDict  (金属和氧化物混合体系密度数据库，适合两相混合体系计算，参考1和4)，推荐使用该数据库
+合金混合体系相对分子质量计算和Factsage密度计算可以任选1和2数据库
 ```
 
 
