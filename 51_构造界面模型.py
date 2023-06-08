@@ -250,8 +250,8 @@ if __name__ == '__main__':
   本脚本的功能如下:
       01: txt文件特定列加上常数，忽略 空行 和 # 开头行，打印总行数（忽略空行和 # 字开头的）
       02: 将两个txt文件合并，忽略 空行 和 # 开头行，打印总行数（忽略空行和 # 字开头的）
-      03: 输出txt文件某列 大于 等于某个数的行号
-      04: 输出txt文件某列 小于 等于某个数的行号
+      03: 输出txt文件某列 大于 等于某个数的行号，忽略#开头行
+      04: 输出txt文件某列 小于 等于某个数的行号，忽略#开头行
       05: 生成10000行自定义曲面函数的data.txt文件
       06: 绘制3列（x,y,z）数据组成的曲面图及其二维填色图
       
@@ -285,6 +285,7 @@ if __name__ == '__main__':
         filtered_indices = get_filtered_indices(file_path, column_index, constant)
         print(f"Indices of filtered lines: {filtered_indices}")
         print("满足要求的原子序号",[i-1 for i in filtered_indices])
+        print("总数为：",len(filtered_indices))
 
     elif defChoose == "04":
         file_path = inputFunction()
@@ -293,6 +294,7 @@ if __name__ == '__main__':
         filtered_indices = get_filtered_indices_less(file_path, column_index, constant)
         print(f"Indices of filtered lines: {filtered_indices}")
         print("满足要求的原子序号",[i-1 for i in filtered_indices])
+        print("总数为：",len(filtered_indices))
 
     elif defChoose == "05":
 
@@ -319,8 +321,6 @@ if __name__ == '__main__':
 
     else:
         print("序号不存在，请重新选择！")
-
-
 
 
 
