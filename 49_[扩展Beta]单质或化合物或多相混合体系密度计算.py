@@ -213,6 +213,8 @@ def atomMakeupDict(atomicMassSingleDict,DBfilename,elementDict):   # 输入的3�
             print('未添加新的化合物原子构成',plusDict)
     print('\n')
     return atomDict,chemSubList    # 返回更新后的化合物组成字典,以及所有输入的化合物分子式列表，二者位于一个列表中
+    # chemSubList = jsonMoleList + missMoleList，例如：{'CaO':'16','SiO2':'16'}
+    # atomDict = { **atomDict, **plusDict } ，例如 {'SiO2': {'Si': '1', 'O': '2', 'total': 3}, 'CaO': {'Ca': '1', 'O': '1', 'total': 2}, 'B2O3': {'B': '2', 'O': '3', 'total': 5}}
 
 
 
