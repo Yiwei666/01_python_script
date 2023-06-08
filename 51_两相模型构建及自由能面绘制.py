@@ -283,18 +283,20 @@ if __name__ == '__main__':
         constant = float(input('Enter the constant to use as the filter: '))
         
         filtered_indices = get_filtered_indices(file_path, column_index, constant)
-        print(f"Indices of filtered lines: {filtered_indices}")
-        print("满足要求的原子序号",[i-1 for i in filtered_indices])
-        print("总数为：",len(filtered_indices))
+        print(f"满足要求行的索引(包含空行和#行索引): {filtered_indices} \n")
+        print("满足要求行的行号(包含空行和#行索引)：",[i+1 for i in filtered_indices],"\n")
+        print("满足要求的原子序号(要求标准xyz文件，前两行用#注释)",[i-1 for i in filtered_indices],"\n")
+        print("满足要求的总行数(与空行和#行无关)：",len(filtered_indices))
 
     elif defChoose == "04":
         file_path = inputFunction()
         column_index = int(input('Enter the column index to filter (starting from 0): '))
         constant = float(input('Enter the constant to use as the filter: '))
         filtered_indices = get_filtered_indices_less(file_path, column_index, constant)
-        print(f"Indices of filtered lines: {filtered_indices}")
-        print("满足要求的原子序号",[i-1 for i in filtered_indices])
-        print("总数为：",len(filtered_indices))
+        print(f"满足要求行的索引(包含空行和#行索引): {filtered_indices} \n")
+        print("满足要求行的行号(包含空行和#行索引)：",[i+1 for i in filtered_indices],"\n")
+        print("满足要求的原子序号(要求标准xyz文件，前两行用#注释)",[i-1 for i in filtered_indices],"\n")
+        print("满足要求的总行数(与空行和#行无关)：",len(filtered_indices))
 
     elif defChoose == "05":
 
@@ -321,7 +323,6 @@ if __name__ == '__main__':
 
     else:
         print("序号不存在，请重新选择！")
-
 
 
 
