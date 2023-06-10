@@ -49,9 +49,13 @@
 ```
   两相模型构建流程：
       01: 确定单相/均相的总原子数及各组元（化合物）的质量百分数，基于脚本  49_[扩展Beta]单质或化合物或多相混合体系密度计算.py  计算各组元的摩尔数及体系的密度
-      02：基于结合42_[扩展]化合物各类原子数统计.py 计算体系中各类原子数量，利用material studio进行建模，获取.cell文件，
+      02：基于结合42_[扩展]化合物各类原子数统计.py 计算体系中各类原子数量，利用material studio进行建模，获取.cell文件
       03：结合ovito或脚本48_[类]cell文件转data文件.py 导出 xyz格式的初始结构模型，进行标准AIMD获取平衡结构，提取某两帧平衡结构model1.xyz和model2.xyz作为搭建两相结构的初始结构模型
-      04：利用本脚本功能1对上述其中一个model2.xyz模型的z分坐标加上一个常数（model1.xyz模型）
+      04：利用本脚本功能1对上述其中一个model2.xyz模型的z分坐标加上一个常数（model1.xyz模型的晶格常数C + 两相界面真空层厚度0.3~0.5 Å），获取modify_model2.txt模型文件
+      05：利用本脚本02功能对上述 model1.xyz 和 modify_model2.txt 进行合并，得到两相模型 model_merge.xyz，注意添加两相模型总原子数以及晶格参数
+      06：利用本脚本03和04功能获取model_merge.xyz中z轴方向需要在边界处固定的原子编号，添加到cp2k的inp文件中
+      07：利用上述model_merge.xyz 进行无偏分子动力学模拟，获取两相模型的平衡结构 merge_equilibrium.xyz
+      08：在inp文件中设置偏置参数，利用上述merge_equilibrium.xyz模型进行元动力学模拟
 
 
   本脚本的功能如下:
