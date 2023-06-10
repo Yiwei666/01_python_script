@@ -187,11 +187,11 @@ class Xyz():
                 zF  = float(self.xyzDict[i][j][3])
                 xyzF = [xF,yF,zF]
                 coorABCDList.append(xyzF)
-            print("A,B,C,D四点坐标分别为：", coorABCDList)        # coorABCDList类似于 [[8.987708,7.553001,32.346226], [6.760567,8.036732,32.353806], [6.975581,4.544739,32.231148], [0.303598,4.846121,6.626125],]
-            d = distance_from_plane(coorABCDList[0], coorABCDList[1], coorABCDList[2], coorABCDList[3])   # 函数调用需要输入4个列表，每个列表是点的x、y、z分坐标
+            print("A,B,C,D四点坐标分别为：", coorABCDList)                                                 # coorABCDList类似于 [[8.987708,7.553001,32.346226], [6.760567,8.036732,32.353806], [6.975581,4.544739,32.231148], [0.303598,4.846121,6.626125]]
+            d = distance_from_plane(coorABCDList[0], coorABCDList[1], coorABCDList[2], coorABCDList[3])    # 函数调用需要输入4个列表，每个列表是点的x、y、z分坐标
             print("帧数及对应的点到面的距离分别为：",i,"距离：",d)
             with open(self.saveFile, 'a+') as f:
-                f.write(str(i)+"   "+str(d)+'\n')          # 保存到文件的数据为：第一列为帧数，第二列为距离
+                f.write(str(i)+"   "+str(d)+'\n')                                                          # 保存到文件的数据为：第一列为帧数，第二列为距离
 
 
 
