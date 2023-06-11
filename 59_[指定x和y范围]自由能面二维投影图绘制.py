@@ -47,15 +47,15 @@ x, y, z = x[idx], y[idx], z[idx]
 fig, ax = plt.subplots()
 
 # 定义网格
-xi = np.linspace(min(x)-0.5, max(x) + 0.5, 500)         # 图的左侧和右侧与y坐标轴的间距均为0.5
-yi = np.linspace(min(y)-0.5, max(y)+0.5, 500)         # 图的上侧和下侧与x坐标轴的间距均为0.5
+xi = np.linspace(min(x)-0.5, max(x) + 0.5, 500)              # 图的左侧和右侧与y坐标轴的间距均为0.5
+yi = np.linspace(min(y)-0.5, max(y)+0.5, 500)                # 图的上侧和下侧与x坐标轴的间距均为0.5
 X, Y = np.meshgrid(xi, yi)
 
 # 插值数据到网格上
 Z = griddata((x, y), z, (X, Y), method='linear')
 
 # 绘制投影图
-contour = ax.contourf(X, Y, Z, cmap='viridis', levels=40)
+contour = ax.contourf(X, Y, Z, cmap='viridis', levels=40)    # 设置色系 cmap='viridis'
 
 # 添加colorbar
 cbar = plt.colorbar(contour)
