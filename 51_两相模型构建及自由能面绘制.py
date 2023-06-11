@@ -192,7 +192,7 @@ def generate_surface_data(filename, function, x_range, y_range, num_rows):
 # from mpl_toolkits.mplot3d import Axes3D
 # from scipy.interpolate import griddata
 
-def plot_fes(datafile, cmap='viridis', levels=40, offset=-25, figsize=(10,6)):
+def plot_fes(datafile, cmap='viridis', levels=40, offset=-3500, figsize=(10,6),zrangemin = -3700 ):
     # 设置 DPI，图像清晰度
     # 通常在 100 到 300 DPI 之间选择一个合适的值即可。如果需要更高的分辨率，可以考虑使用矢量格式的图像，如 PDF、SVG 等，它们不受 DPI 的限制，可以随意缩放而不会失去清晰度。
     plt.rcParams['figure.dpi'] = 600
@@ -201,8 +201,8 @@ def plot_fes(datafile, cmap='viridis', levels=40, offset=-25, figsize=(10,6)):
     data = np.loadtxt(datafile)
     x = data[:, 0]
     y = data[:, 1]
-    # z = data[:, 2]*4.3597*6.022*100
-    z = data[:, 2]
+    z = data[:, 2]*4.3597*6.022*100
+    # z = data[:, 2]
     
     # 创建3D坐标轴
     fig = plt.figure(figsize=figsize)
@@ -212,8 +212,8 @@ def plot_fes(datafile, cmap='viridis', levels=40, offset=-25, figsize=(10,6)):
     ax.plot_trisurf(x, y, z, cmap=cmap)
 
     # 添加标签和标题
-    ax.set_xlabel('Ti-B coordination number')
-    ax.set_ylabel('Ti-Al coordination number')
+    ax.set_xlabel('Z-axis component')
+    ax.set_ylabel('Mg-O coordination number')
     ax.set_zlabel('Energy (kJ/mol)')
     ax.set_title('3-dimension contour and surface plot')
 
@@ -221,8 +221,9 @@ def plot_fes(datafile, cmap='viridis', levels=40, offset=-25, figsize=(10,6)):
     xi = np.linspace(min(x), max(x), 500)
     yi = np.linspace(min(y), max(y), 500)
     X, Y = np.meshgrid(xi, yi)
+    
     # 设置纵坐标的刻度范围，调整曲面及投影图在坐标系中的相对位置
-    ax.set_zlim(-7, 2)
+    ax.set_zlim(zrangemin, 0)
 
     # 插值数据到网格上
     Z = griddata((x, y), z, (X, Y), method='linear')
@@ -317,7 +318,12 @@ if __name__ == '__main__':
 
     elif defChoose == "06":
         filename = inputFunction()
-        plot_fes(filename, cmap='viridis', levels=40, offset=-7, figsize=(10,6))
+        print("请输入offset的值，如-3500，确定填色图在Z轴的坐标，单位kJ/mol")
+        offset = float(input())
+        print("请输入z轴坐标最小值zrangemin的值，如-3600，单位kJ/mol")
+        zrangemin = float(input())
+        
+        plot_fes(filename, cmap='viridis', levels=40, offset = offset, figsize=(10,6), zrangemin = zrangemin)
         # levels : This parameter specifies the number of contour levels and/or the values of the contour levels to be drawn. By default, levels is set to 10, meaning that the contour plot will have 10 equally spaced levels between the minimum and maximum values of the interpolated data Z. Alternatively, a list of specific contour levels can be passed to the levels parameter to create a custom set of contours.
         # offset : This parameter specifies a constant offset to apply to the Z data, which is useful for creating stacked contour plots. By default, offset is set to None, meaning that the contour plot is drawn at the same Z-level as the interpolated data.
 
