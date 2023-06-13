@@ -27,6 +27,9 @@ data_file = input("请输入待处理的数据文本名：")
 data = []
 with open(data_file, 'r') as file:
     for line in file:
+        print("所有的#开头行：")
+        if line.startswith("#"):
+            print(line.strip())
         line = line.strip()
         if line != "" and not line.startswith("#"):
             data.append(line.split())
