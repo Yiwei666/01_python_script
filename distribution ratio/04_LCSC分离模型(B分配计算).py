@@ -38,7 +38,7 @@ numerator_part2 = (N_X - E_X) * M_X
 denominator_part1 = N_SiO2 * M_SiO2
 
 # 分母的第二项
-denominator_part2 = sum(N_MeOi[i] * M_MeOi[i] for i in range(0, j))
+denominator_part2 = sum(N_MeOi[i] * M_MeOi[i] for i in range(0, j))   # 注意：由于碱性氧化物只有一种，即CaO，所以N_MeOi和M_MeOi的列表长度为1，因此是range(0,1)
 
 # 分母的第三项
 denominator_part3 = (y / 4) * E_X * M_Si
