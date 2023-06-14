@@ -90,7 +90,7 @@ def process_data_interface(small_column_number, big_column_number, XO_slag_ave, 
                 sum_col4 += float(columns[-4])
 
     # 打印倒数第二列数据和倒数第四列数据的求和
-    print("倒数第二列数据的求和：", sum_col2)
+    print("倒数第二列数据的求和：", sum_col2, " %")
     print("倒数第四列数据的求和：", sum_col4)
     print("界面分配到硅相原子数sum_N_B_in_Si：",round(sum_N_B_in_Si,5))
     print("界面分配到渣相原子数sum_N_B_in_slag：",round(sum_N_B_in_slag,5))
