@@ -24,8 +24,36 @@ with open(filename, 'r') as file:
     for line in data:
         print(line.strip())
 
+def process_data(column_number):
+    
+    # 存储满足条件的行
+    filtered_data = []
+    sum_col2 = 0
+    sum_col4 = 0
 
+    # 筛选并打印第二列数据为0的行
+    print("筛选满足要求的行")
+    for line in data:
+        if line.strip() != '' and not line.startswith('#'):
+            columns = line.split()
+            if len(columns) >= column_number and float(columns[column_number-1]) == 0:
+                print(line.strip())
+                filtered_data.append(columns)
+                sum_col2 += float(columns[-2])
+                sum_col4 += float(columns[-4])
 
+    # 打印倒数第二列数据和倒数第四列数据的求和
+    print("倒数第二列数据的求和：", sum_col2, " %")
+    print("倒数第四列数据的求和：", sum_col4)
+
+    # 按照倒数第二列数据递减的顺序打印行
+    filtered_data.sort(key=lambda x: float(x[-2]), reverse=True)
+    print("按照倒数第二列数据递减的顺序打印：")
+    for line in filtered_data:
+        print(' '.join(line))
+    print("------------------\n")
+
+    
 def process_data_interface(small_column_number, big_column_number, XO_slag_ave, XSi_silicon_ave):    # 列数，从1开始计数，small是与O配位的列，big是与Si配位的列
     
     # 存储满足条件的行
@@ -85,4 +113,7 @@ big_column_number = int(numbers[1])      # 与Si配位
 BO_slag_ave = numbers[2]         # 渣中B-O平均配位数
 BSi_silicon_ave = numbers[3]     # 硅中B-Si平均配位数
 
+process_data(small_column_number)  # 筛选O配位数为0列数，即位于Si相
+process_data(big_column_number)    # 筛选Si配位数为0列数，即位于渣相
 process_data_interface(small_column_number, big_column_number, BO_slag_ave, BSi_silicon_ave)
+
