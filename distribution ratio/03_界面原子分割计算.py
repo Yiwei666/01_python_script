@@ -73,12 +73,16 @@ def process_data_interface(small_column_number, big_column_number, XO_slag_ave, 
     for line in filtered_data:
         print(' '.join(line))
 
-
+        
+input_str = input("请输入O配位数为0所在列数，Si配位数为0所在列数，渣中X-O平均配位数，硅中X-Si平均配位数，用英文逗号隔开：")
+numbers = input_str.split(",")  # 将输入的字符串按逗号分割成列表
+numbers = [float(num.strip()) for num in numbers]  # 将列表中的字符串转换为浮点数
+print(numbers)
 
 # small是与O配位的列，big是与Si配位的列
-small_column_number = 2    # 与O配位
-big_column_number = 3      # 与Si配位
-BO_slag_ave = 3.87         # 渣中B-O平均配位数
-BSi_silicon_ave = 3.78     # 硅中B-Si平均配位数
+small_column_number = numbers[0]    # 与O配位
+big_column_number = numbers[1]      # 与Si配位
+BO_slag_ave = numbers[2]         # 渣中B-O平均配位数
+BSi_silicon_ave = numbers[3]     # 硅中B-Si平均配位数
 
 process_data_interface(small_column_number, big_column_number, BO_slag_ave, BSi_silicon_ave)
