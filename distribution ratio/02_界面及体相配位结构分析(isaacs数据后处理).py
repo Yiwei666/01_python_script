@@ -8,7 +8,7 @@ Created on Tue Jun 13 16:33:29 2023
 import os
 
 def get_integers():
-    input_str = input("请依次输入O配位数为0 和 Si配位数为0所在列数，用英文逗号隔开，列数从1开始计数: ")
+    input_str = input("请依次输入O配位数 和 Si配位数 所在列数，用英文逗号隔开，列数从1开始计数: ")
     numbers = input_str.split(",")
 
     try:
