@@ -1,0 +1,135 @@
+@SET SYSNAME SiP460
+@SET CELL 16.581
+
+&GLOBAL
+    PRINT_LEVEL MEDIUM
+    PROJECT_NAME ${SYSNAME}
+    RUN_TYPE Energy
+&END GLOBAL
+
+&FORCE_EVAL
+    METHOD  QS
+                                                      #    STRESS_TENSOR  ANALYTICAL
+    &DFT
+        BASIS_SET_FILE_NAME BASIS_MOLOPT
+        POTENTIAL_FILE_NAME GTH_POTENTIALS
+        &POISSON
+            PERIODIC XYZ
+        &END POISSON
+
+        &SCF
+            MAX_SCF    500
+            EPS_SCF    1.0e-5
+            SCF_GUESS  RESTART
+            &DIAGONALIZATION
+                ALGORITHM STANDARD                              # Algorithm for diagonalization. DAVIDSON is faster for large systems
+            &END DIAGONALIZATION
+            &MIXING                                             # How to mix old and new density matrices
+                METHOD BROYDEN_MIXING                           # PULAY_MIXING is also a good alternative
+                ALPHA 0.4                                       # Default. Mixing 40% of new density matrix with the old one
+                NBROYDEN 8                                      # Default is 4. Number of previous steps stored for the actual mixing scheme
+            &END MIXING
+            &SMEAR
+                METHOD FERMI_DIRAC
+                ELECTRONIC_TEMPERATURE 300                      # Electronic temperature of Fermi-Dirac smearing in K
+            &END SMEAR
+            ADDED_MOS    500                                    # Number of virtual MOs to solve
+            &PRINT
+                &RESTART ON
+                &END RESTART
+            &END PRINT
+        &END SCF
+
+        &QS
+            EPS_DEFAULT     1e-10
+        &END QS
+        &MGRID
+            NGRIDS 4
+            CUTOFF 400        
+            REL_CUTOFF 60     
+        &END MGRID
+        &XC
+            &XC_FUNCTIONAL PBE
+            &END XC_FUNCTIONAL
+            DENSITY_CUTOFF      1e-10  
+            GRADIENT_CUTOFF     1e-10  
+            TAU_CUTOFF          1e-10  
+            &VDW_POTENTIAL
+                POTENTIAL_TYPE  PAIR_POTENTIAL
+                &PAIR_POTENTIAL
+                    R_CUTOFF    18     
+                    TYPE        DFTD3
+                    PARAMETER_FILE_NAME dftd3.dat
+                    REFERENCE_FUNCTIONAL PBE
+                &END PAIR_POTENTIAL
+            &END VDW_POTENTIAL
+        &END XC
+
+        &PRINT
+            &MO_MOLDEN
+                NDIGITS 8
+                GTO_KIND SPHERICAL
+            &END MO_MOLDEN
+            &PDOS
+                NLUMO -1
+                COMPONENTS
+            &END PDOS
+                                                           #  Printing which kind of atomic charge?
+            &HIRSHFELD  SILENT
+                FILENAME hirshfeld
+            &END  
+            &MULLIKEN  SILENT
+                FILENAME MullIKEN
+            &END MULLIKEN
+            &VORONOI                                       # VORONOI atomic charge
+                VORONOI_RADII Covalent
+            &END VORONOI  
+            &LOWDIN
+                PRINT_ALL F                                    # If T, then printing full net AO and overlap population matrix
+            &END LOWDIN
+                                                           # Output cube file for which function?
+            &ELF_CUBE
+                FILENAME elf
+                STRIDE 1 1 1
+            &END ELF_CUBE
+            &E_DENSITY_CUBE
+                FILENAME density_cube
+                STRIDE 1 1 1
+            &END E_DENSITY_CUBE
+            &MO_CUBES
+                NHOMO  2
+                NLUMO  2
+            &END MO_CUBES
+            &V_XC_CUBE                                        # Exchange-correlation potential
+                STRIDE 1                                      # Stride of exported cube file
+            &END V_XC_CUBE
+            &V_HARTREE_CUBE
+                STRIDE 1                                      # Stride of exported cube file
+            &END V_HARTREE_CUBE 
+
+        &END PRINT        
+    &END DFT
+
+
+    &SUBSYS
+        &TOPOLOGY
+            COORD_FILE ${SYSNAME}.xyz
+            COORD_FILE_FORMAT XYZ
+            CONN_FILE_FORMAT OFF
+        &END TOPOLOGY
+        &CELL
+            ABC ${CELL} ${CELL} ${CELL}
+            ALPHA_BETA_GAMMA 90.0 90.0 90.0
+            MULTIPLE_UNIT_CELL  1 1 1
+            PERIODIC XYZ
+        &END CELL
+        &KIND P
+            BASIS_SET DZVP-MOLOPT-SR-GTH
+            POTENTIAL GTH-PBE-q5
+        &END KIND
+        &KIND Si
+            BASIS_SET DZVP-MOLOPT-SR-GTH
+            POTENTIAL GTH-PBE-q4
+        &END KIND
+    &END SUBSYS
+&END FORCE_EVAL
