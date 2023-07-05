@@ -105,6 +105,7 @@ ELF_S1-1和ELF_S2分别是最高占据轨道和最低空轨道的ELF
 ```
 
 ### 3. 输出文件分析
+---
 
 alpha-Fe2O3-multiwfn-ALPHA_k2-1.pdos 文件的部分结果如下所示   
 
@@ -122,6 +123,7 @@ alpha-Fe2O3-multiwfn-ALPHA_k2-1.pdos 文件的部分结果如下所示
 
 
 ### 4. 熔体电子结构计算
+---
 
 **01_SiP-E_diag.inp**
 ```
@@ -175,7 +177,8 @@ alpha-Fe2O3-multiwfn-ALPHA_k2-1.pdos 文件的部分结果如下所示
 
 ```
 
-### 5. cp2k电子结构计算关键词
+### 5. cp2k电子结构关键词
+---
 
 ```
 说明：最该高占据轨道和最低空轨道
