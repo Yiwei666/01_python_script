@@ -10,6 +10,23 @@
 ### 项目文件结构
 ---
 
+**1. new.py**
+```
+Convert the discrete CP2K PDOS points to a smoothed curve using convoluted gaussians.
+
+Also shifts the energies by the Fermi energy (so the Fermi energy will afterwards be at 0),
+and normalizes by the number of atoms of this kind.
+
+将离散的CP2K PDOS点通过卷积高斯函数转换为平滑曲线。
+
+同时将能量以费米能量为基准进行平移（使费米能量之后为0），并通过该种类的原子数进行归一化处理。
+```
+
+
+
+
+
+
 **Fe2O3.inp：UKS开壳层计算，MAGNETIZATION初猜**
 
 本地目录  C:\Users\sun78\Desktop\cp2k_model\60_Fe2O3-E\22test_Fe2O3_Findit\outputFile+5.0
