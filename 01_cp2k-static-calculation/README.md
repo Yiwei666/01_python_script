@@ -21,8 +21,21 @@ python new.py -s 0.01 file1.pdos  file2.pdos  > dos.txt
 
 ```
 
+**2. pdos.py 和 get-smearing-pdos.py**
 
+```
+get-smearing-pdos.py:
 
+读取一个或一对 alpha、beta 自旋文件（ CP2K PDOS 格式），并返回一个名为 "smeared.dat" 的文件，其中包含平滑化的 DOS（态密度）。
+
+使用命令举例：  
+Usage: ./get-smearing-pdos.py ALPHA.pdos BETA.pdos
+        or
+        ./get-smearing-pdos.py file.pdos 
+
+ Output: 
+         smeared.dat: smeared DOS
+```
 
 
 
