@@ -68,6 +68,21 @@ inp控制文件输出部分，输出包括DOS态密度，PDOS分波态密度，M
       &END MOMENTS
     &END PRINT
 
+
+
+最该高占据轨道和最低空轨道
+
+NHOMO
+        NHOMO {Integer}
+        If the printkey is activated controls the number of homos that dumped as a cube (-1=all), eigenvalues are always all dumped  [Edit on GitHub]
+        This keyword cannot be repeated and it expects precisely one integer.
+        Default value: 1
+
+NLUMO
+        NLUMO {Integer}
+        If the printkey is activated controls the number of lumos that are printed and dumped as a cube (-1=all)  [Edit on GitHub]
+        This keyword cannot be repeated and it expects precisely one integer.
+        Default value: 0
 ```
 
 下面是输入文件以及计算完成后的输出文件
