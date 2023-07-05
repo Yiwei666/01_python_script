@@ -16,8 +16,8 @@
 同时将能量以费米能量为基准进行平移（使费米能量之后为0），并通过该种类的原子数进行归一化处理。
 
 使用命令举例：
-    python new.py -s 0.01 file1.pdos  > dos.txt
-    python new.py -s 0.01 file1.pdos  file2.pdos  > dos.txt
+python new.py -s 0.01 file1.pdos  > dos.txt
+python new.py -s 0.01 file1.pdos  file2.pdos  > dos.txt
 
 ```
 
