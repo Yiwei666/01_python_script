@@ -12,14 +12,13 @@
 
 **1. new.py**
 ```
-Convert the discrete CP2K PDOS points to a smoothed curve using convoluted gaussians.
-
-Also shifts the energies by the Fermi energy (so the Fermi energy will afterwards be at 0),
-and normalizes by the number of atoms of this kind.
-
 将离散的CP2K PDOS点通过卷积高斯函数转换为平滑曲线。
-
 同时将能量以费米能量为基准进行平移（使费米能量之后为0），并通过该种类的原子数进行归一化处理。
+
+使用命令举例：
+    python new.py -s 0.01 file1.pdos  > dos.txt
+    python new.py -s 0.01 file1.pdos  file2.pdos  > dos.txt
+
 ```
 
 
