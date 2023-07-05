@@ -67,22 +67,6 @@ inp控制文件输出部分，输出包括DOS态密度，PDOS分波态密度，M
         PERIODIC T #Use Berry phase formula (T) or simple operator (F), the latter normally applies to isolated systems
       &END MOMENTS
     &END PRINT
-
-
-
-最该高占据轨道和最低空轨道
-
-NHOMO
-        NHOMO {Integer}
-        If the printkey is activated controls the number of homos that dumped as a cube (-1=all), eigenvalues are always all dumped  [Edit on GitHub]
-        This keyword cannot be repeated and it expects precisely one integer.
-        Default value: 1
-
-NLUMO
-        NLUMO {Integer}
-        If the printkey is activated controls the number of lumos that are printed and dumped as a cube (-1=all)  [Edit on GitHub]
-        This keyword cannot be repeated and it expects precisely one integer.
-        Default value: 0
 ```
 
 下面是输入文件以及计算完成后的输出文件
@@ -137,16 +121,80 @@ alpha-Fe2O3-multiwfn-ALPHA_k2-1.pdos 文件的部分结果如下所示
 ```
 
 
-
-
-
-
-
+### 4. 熔体电子结构计算
 
 **01_SiP-E_diag.inp**
 ```
-该
 本地路径： C:\Users\sun78\Desktop\cp2k_model\44_SiP-E\460_diag
 
 ```
+
+```
+        &PRINT
+            &MO_MOLDEN
+                NDIGITS 8
+                GTO_KIND SPHERICAL
+            &END MO_MOLDEN
+            &PDOS
+                NLUMO -1
+                COMPONENTS
+            &END PDOS
+                                                           #  Printing which kind of atomic charge?
+            &HIRSHFELD  SILENT
+                FILENAME hirshfeld
+            &END  
+            &MULLIKEN  SILENT
+                FILENAME MullIKEN
+            &END MULLIKEN
+            &VORONOI                                       # VORONOI atomic charge
+                VORONOI_RADII Covalent
+            &END VORONOI  
+            &LOWDIN
+                PRINT_ALL F                                    # If T, then printing full net AO and overlap population matrix
+            &END LOWDIN
+                                                           # Output cube file for which function?
+            &ELF_CUBE
+                FILENAME elf
+                STRIDE 1 1 1
+            &END ELF_CUBE
+            &E_DENSITY_CUBE
+                FILENAME density_cube
+                STRIDE 1 1 1
+            &END E_DENSITY_CUBE
+            &MO_CUBES
+                NHOMO  2                                      # 最高和次高占据轨道
+                NLUMO  2                                      # 最低和次低占据轨道
+            &END MO_CUBES
+            &V_XC_CUBE                                        # Exchange-correlation potential
+                STRIDE 1                                      # Stride of exported cube file
+            &END V_XC_CUBE
+            &V_HARTREE_CUBE
+                STRIDE 1                                      # Stride of exported cube file
+            &END V_HARTREE_CUBE 
+        &END PRINT
+
+```
+
+### 5. cp2k电子结构计算关键词
+
+```
+说明：最该高占据轨道和最低空轨道
+
+NHOMO
+        NHOMO {Integer}
+        If the printkey is activated controls the number of homos that dumped as a cube (-1=all), eigenvalues are always all dumped  [Edit on GitHub]
+        This keyword cannot be repeated and it expects precisely one integer.
+        Default value: 1
+
+NLUMO
+        NLUMO {Integer}
+        If the printkey is activated controls the number of lumos that are printed and dumped as a cube (-1=all)  [Edit on GitHub]
+        This keyword cannot be repeated and it expects precisely one integer.
+        Default value: 0
+```
+
+
+
+
+
 
