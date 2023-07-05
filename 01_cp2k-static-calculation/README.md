@@ -10,7 +10,7 @@
 ### 项目文件结构
 ---
 
-**Fe2O3.inp**
+**Fe2O3.inp：UKS开壳层计算，MAGNETIZATION初猜**
 
 本地目录  C:\Users\sun78\Desktop\cp2k_model\60_Fe2O3-E\22test_Fe2O3_Findit\outputFile+5.0
 
@@ -65,8 +65,14 @@ inp控制文件输出部分，输出包括DOS态密度，PDOS分波态密度，M
 
 ```
 
+总结：
 
+```
+ALPHA_k1-1~3是各元素的上自旋pdos，BETA_k1-1~3是各元素的下自旋pdos
 
+ELF_S1-1和ELF_S2分别是最高占据轨道和最低空轨道的ELF
+
+```
 
 
 **01_SiP-E_diag.inp**
