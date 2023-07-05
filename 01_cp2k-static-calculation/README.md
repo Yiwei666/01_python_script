@@ -43,6 +43,7 @@ inp控制文件输出部分，输出包括DOS态密度，PDOS分波态密度，M
 
 下面是输入文件以及计算完成后的输出文件
 ```
+输入文件：
     dftd3.dat
     Fe2O3.inp
     GTH_POTENTIALS
@@ -50,6 +51,7 @@ inp控制文件输出部分，输出包括DOS态密度，PDOS分波态密度，M
     sub.sh
     tem.out
 
+输出文件：
     alpha-Fe2O3-multiwfn-1.dos
     alpha-Fe2O3-multiwfn-ALPHA_k1-1.pdos
     alpha-Fe2O3-multiwfn-ALPHA_k2-1.pdos
