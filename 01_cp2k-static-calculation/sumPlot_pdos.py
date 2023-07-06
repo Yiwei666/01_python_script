@@ -52,11 +52,11 @@ def process_data_file(filename):
             num_columns = len(data[0])
             if num_columns == 2:
                 header = 'Energy_[eV]\ts\n'
+            elif num_columns == 3:
+                header = 'Energy_[eV]\ts\tp\n'
+            elif num_columns == 4:
+                header = 'Energy_[eV]\ts\tp\td\n'
             elif num_columns == 5:
-                header = 'Energy_[eV]\ts\tp\td\tf\n'
-            elif num_columns == 10:
-                header = 'Energy_[eV]\ts\tp\td\tf\n'
-            elif num_columns == 17:
                 header = 'Energy_[eV]\ts\tp\td\tf\n'
 
             output_file.write(header)
