@@ -25,6 +25,7 @@ spdf_sumPDOS.py（sumPlot_pdos.py）：
         比如输出的数据有3列就是Energy_[eV]     s     p ， 有5列就是Energy_[eV]     s     p     d       f
         上面的代码在读取数据的时候忽略了#字开头行，现在能不能改为忽略第一行即可，因为我发现所有数据格式都是标准的，只需要忽略第一行就可以了
 
+注意：spdf_sumPDOS.py不要对txt第一行进行注释，默认忽略；sumPlot_pdos.py忽略txt开头的行，其余功能一样
 
 处理后的数据格式：
         Energy_[eV]	s	p	d	f
