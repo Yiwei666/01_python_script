@@ -110,12 +110,12 @@ if __name__ == '__main__':
 
     # 调用函数并传入列数参数
     # column_number = int(input("请输入列数："))
-    print("筛选X-O配位数为0行，位于硅相")
+    print("筛选X-O配位数为0的行，位于硅相")
     column_number = num1               # O配位所在列数
     process_data(column_number)
 
 
-    print("筛选X-Si配位数为0行，位于渣相")
+    print("筛选X-Si配位数为0的行，位于渣相")
     column_number = num2                  # Si配位所在列数
     process_data(column_number)
 
