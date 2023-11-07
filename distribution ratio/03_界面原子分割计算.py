@@ -52,6 +52,7 @@ def process_data(column_number):
     for line in filtered_data:
         print(' '.join(line))
     print("------------------\n")
+    return sum_col4, sum_col2               # 依次返回倒数第4列和倒数第2列的值
 
     
 def process_data_interface(small_column_number, big_column_number, XO_slag_ave, XSi_silicon_ave):    # 列数，从1开始计数，small是与O配位的列，big是与Si配位的列
@@ -100,20 +101,34 @@ def process_data_interface(small_column_number, big_column_number, XO_slag_ave, 
     print("按照倒数第二列数据递减的顺序打印：")
     for line in filtered_data:
         print(' '.join(line))
+    return sum_col4, sum_col2, sum_N_B_in_Si, sum_N_B_in_slag               # 依次返回倒数第4列和倒数第2列的值，界面分配到硅相原子数以及界面分配到渣相原子数
 
+
+if __name__ == '__main__':
         
-input_str = input("请输入O配位数所在列数，Si配位数所在列数，渣中X-O平均配位数，硅中X-Si平均配位数，用英文逗号隔开：")
-numbers = input_str.split(",")  # 将输入的字符串按逗号分割成列表
-numbers = [float(num.strip()) for num in numbers]  # 将列表中的字符串转换为浮点数
-print(numbers)
+    input_str = input("请输入O配位数所在列数，Si配位数所在列数，渣中X-O平均配位数，硅中X-Si平均配位数，用英文逗号隔开：")
+    numbers = input_str.split(",")  # 将输入的字符串按逗号分割成列表
+    numbers = [float(num.strip()) for num in numbers]  # 将列表中的字符串转换为浮点数
+    print(numbers)
 
-# small是与O配位的列，big是与Si配位的列
-small_column_number = int(numbers[0])    # 与O配位
-big_column_number = int(numbers[1])      # 与Si配位
-BO_slag_ave = numbers[2]         # 渣中B-O平均配位数
-BSi_silicon_ave = numbers[3]     # 硅中B-Si平均配位数
+    # small是与O配位的列，big是与Si配位的列
+    small_column_number = int(numbers[0])    # 与O配位
+    big_column_number = int(numbers[1])      # 与Si配位
+    BO_slag_ave = numbers[2]         # 渣中B-O平均配位数
+    BSi_silicon_ave = numbers[3]     # 硅中B-Si平均配位数
 
-process_data(small_column_number)  # 筛选O配位数为0列数，即位于Si相
-process_data(big_column_number)    # 筛选Si配位数为0列数，即位于渣相
-process_data_interface(small_column_number, big_column_number, BO_slag_ave, BSi_silicon_ave)
+    print("【筛选O配位数为0列数，即位于Si相】")
+    result_silicon = process_data(small_column_number)  # 筛选O配位数为0列数，即位于Si相
+    sum_col4_silicon, sum_col2_silicon = result_silicon
 
+    print("【筛选Si配位数为0列数，即位于渣相】")
+    result_silicate = process_data(big_column_number)    # 筛选Si配位数为0列数，即位于渣相
+    sum_col4_silicate, sum_col2_silicate = result_silicate
+
+    print("【筛选O配位数以及Si配位数都不为0的列，即位于界面处】")
+    result_interface = process_data_interface(small_column_number, big_column_number, BO_slag_ave, BSi_silicon_ave)     # 筛选O配位数以及Si配位数都不为0的列，即位于界面处
+    sum_col4_interface, sum_col2_interface, sum_N_B_in_Si_interface, sum_N_B_in_slag_interface = result_interface
+
+    print("------------------\n")
+    print("考虑界面分割后位于硅相的X总原子数：", sum_col4_silicon, '+',sum_N_B_in_Si_interface, '=', round(sum_col4_silicon + sum_N_B_in_Si_interface,3))
+    print("考虑界面分割后位于渣相的X总原子数：", sum_col4_silicate, '+',sum_N_B_in_slag_interface, '=', round(sum_col4_silicate + sum_N_B_in_slag_interface,3))
