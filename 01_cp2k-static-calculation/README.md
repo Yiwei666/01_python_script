@@ -78,7 +78,7 @@ Usage: ./get-smearing-pdos.py ALPHA.pdos BETA.pdos
 
 **3. Fe2O3.inp：UKS开壳层计算，MAGNETIZATION初猜**
 
-本地目录  C:\Users\sun78\Desktop\cp2k_model\60_Fe2O3-E\22test_Fe2O3_Findit\outputFile+5.0
+本地目录  `C:\Users\sun78\Desktop\cp2k_model\60_Fe2O3-E\22test_Fe2O3_Findit\outputFile+5.0`
 
 inp控制文件输出部分，输出包括DOS态密度，PDOS分波态密度，MOLDEN文件，ELF电子局域化函数，MULLIKEN电荷以及MOMENTS
 
