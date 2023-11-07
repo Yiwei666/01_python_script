@@ -36,7 +36,7 @@ def process_data(input_file):
 
 
     # 提示用户输入浮点数x、y和z，用英文逗号分隔
-    user_input = input("请输入浮点数：硅酸盐单相中X-O配位数y_CN_SilicateAve, 总的杂质原子数z_total_Nx（用英文逗号分隔）: ")       # z_total_Nx杂质原子数, y_CN_SilicateAve是硅酸盐单相中X-O配位数
+    user_input = input("请输入浮点数：硅酸盐中X-O平均配位数y_CN_SilicateAve, 两相中总的杂质原子数z_total_Nx（用英文逗号分隔）: ")       # z_total_Nx杂质原子数, y_CN_SilicateAve是硅酸盐单相中X-O配位数
 
     # 将输入的字符串拆分成浮点数列表
     y, z = map(float, user_input.split(','))
@@ -50,9 +50,9 @@ def process_data(input_file):
 
 
     # 打印计算结果
-    print("进入到silicate中的X原子数：", w)
-    print("留在silicon中的X原子数：", z-w)
-    print("k值，即X-O两相配位数/硅酸盐均相配位数:", k)
+    print("进入到silicate中的X原子数：", round(w,4))
+    print("留在silicon中的X原子数：", round(z-w,4))
+    print("X两相平均氧化程度，k值，即X-O两相配位数/硅酸盐X-O配位数:", round(k,4))
 
 
 
@@ -79,6 +79,3 @@ if __name__ == '__main__':
     # 使用示例
     input_file = filename
     process_data(input_file)
-
-
-
