@@ -58,6 +58,8 @@ python new.py -s 0.01 file1.pdos  file2.pdos  > dos.txt
 
 **2. pdos.py 和 get-smearing-pdos.py**
 
+注意：`pdos.py` 和 `get-smearing-pdos.py`是放在一起使用的，`get-smearing-pdos.py`会调用`pdos.py`中的方法和函数
+
 ```
 get-smearing-pdos.py:
 
