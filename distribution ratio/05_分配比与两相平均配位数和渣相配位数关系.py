@@ -11,8 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# variable_x = CN_two_ave / CN_slag_ave
-def logL_CN(variable_x, M_X, y):       # 杂质原子 X 相对原子质量, 
+# variable_x = CN_two_ave / CN_slag_ave，定义的关键模型参数k，表征杂质的氧化程度，取值在0到1之间
+def logL_CN(variable_x, M_X, y):       # variable_x是评估杂质氧化程度的关键参量k，M_X是杂质原子 X 相对原子质量, y是杂质原子在硅酸盐熔体中的稳定价态
 
     # y = 4        # 杂质原子在渣中稳定价态
     N_X = 8      # 硅相初始杂质原子B数
