@@ -16,6 +16,13 @@
 </p>
 
 
+### 3. 物理意义
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240418-174317.png" alt="Image Description" width="700">
+</p>
+
+
 
 ## 2. 模式密度表达式推导
 
