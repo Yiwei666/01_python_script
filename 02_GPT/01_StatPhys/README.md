@@ -29,3 +29,11 @@
 <img src="https://19640810.xyz/05_image/01_imageHost/20240418-172018.png" alt="Image Description" width="700">
 </p>
 
+#### 2. 从立方体到球体
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240418-172335.png" alt="Image Description" width="700">
+</p>
+
+
+
