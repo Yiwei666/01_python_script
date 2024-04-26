@@ -254,7 +254,7 @@ Mg         0.3604        1.99    2.82
 
 - `49_[扩展-2化合物密度数据库]单质或化合物或多相混合体系密度计算.json`
 
-化合物密度数据库，对应上述脚本功能3
+化合物密度数据库，对应上述脚本功能3，这些氧化物的密度数据有些是从书本中查询得到的，有些是利用factsage计算得到的
 
 ```json
 {"SiO2": ["2.335", "g/cm3", "null", "SiO2", "null", "null", "null"], "CaO": ["2.8581", "g/cm3", "null", "CaO", "null", "null", "null"], "B2O3": ["2.55", "g/cm3", "null", "B2O3", "null", "null", "null"], "V2O5": ["3.357", "g/cm3", "null", "V2O5", "null", "null", "null"], "MnO2": ["5.2", "g/cm3", "null", "MnO2", "null", "null", "null"], "Fe2O3": ["5.277", "g/cm3", "null", "Fe2O3", "null", "null", "null"], "TiO2": [4.245019666206016, "g/cm3", "null", "TiO2", "null", "null", "null"], "Al2O3": [3.987067500879834, "g/cm3", "null", "Al2O3", "null", "null", "null"]}
