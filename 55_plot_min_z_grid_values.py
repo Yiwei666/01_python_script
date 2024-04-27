@@ -2,19 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def find_and_plot_min_z_in_grids(file_name):
-    """
-    This function reads a data file and finds the minimum value of z within each 1x1 grid over the entire range
-    of x and y provided in the file. It then plots a 2D grid where each cell's color indicates the magnitude
-    of the minimum z found within that cell, and each cell displays the x, y, z coordinates of the point
-    where the minimum z occurs, displayed over three lines for readability. The z-value is scaled by
-    a constant factor (4.3597*6.022*100) before displaying.
-
-    Parameters:
-    file_name (str): Name of the data file containing x, y, z values.
-
-    Returns:
-    None
-    """
     # Initialize containers for data and bounds
     data = []
     x_min, x_max, y_min, y_max = float('inf'), -float('inf'), float('inf'), -float('inf')
@@ -60,11 +47,13 @@ def find_and_plot_min_z_in_grids(file_name):
             z_values[iy, ix] = scaled_z
             labels[iy, ix] = f"{value['x']:.1f}\n{value['y']:.1f}\n{scaled_z:.1f}"
 
-
     # Create a figure with high resolution
-    fig, ax = plt.subplots(dpi=600)  # Set dpi to 300 for high resolution
+    fig, ax = plt.subplots(dpi=600)
     cax = ax.matshow(z_values, cmap='viridis', origin='lower')
     
+    # Add grid lines on the plot
+    ax.grid(which='both', linestyle='-', linewidth=0.5, color='gray', alpha=0.5)
+
     # Add text annotations with scaled z values
     for (i, j), label in np.ndenumerate(labels):
         if label:
