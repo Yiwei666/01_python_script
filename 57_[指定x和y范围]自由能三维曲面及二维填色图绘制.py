@@ -63,7 +63,8 @@ ax.set_zlabel('Energy (kJ/mol)')
 ax.set_title('3-dimension contour and surface plot')
 
 # 设置z轴坐标范围
-ax.set_zlim(-3500, 0) 
+# ax.set_zlim(-3500, 0) 
+ax.set_zlim(offset, 0) 
 
 
 # 定义网格
