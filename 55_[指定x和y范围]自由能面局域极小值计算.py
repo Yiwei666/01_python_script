@@ -37,9 +37,9 @@ def find_min_z_and_corresponding_x_and_y(x_min, x_max, y_min, y_max, file_name):
                     min_y = y
     if min_z is not None:
         print("Minimum z value for x in range [{}, {}] and y in range [{}, {}]: {}".format(x_min, x_max, y_min, y_max, min_z))
-        print("Corresponding x value: {}".format(min_x))
-        print("Corresponding y value: {}".format(min_y))
-        print("Product of minimum z with 4.3597*6.022*100: {}".format(min_z*4.3597*6.022*100))
+        print("Corresponding x value: {:.3f}".format(min_x))
+        print("Corresponding y value: {:.3f}".format(min_y))
+        print("Product of minimum z with 4.3597*6.022*100: {:.3f}".format(min_z*4.3597*6.022*100))
     else:
         print("No data found for x in range [{}, {}] and y in range [{}, {}]".format(x_min, x_max, y_min, y_max))
 
