@@ -105,6 +105,12 @@ Mg         0.3604        1.99    2.82
 6. 颜色条的添加：为图形添加了颜色条，帮助解读不同颜色所代表的数据值。
 ```
 
+- 示例
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240427-162315.png" alt="Image Description" width="500">
+</p>
+
 
 ### `56_isaacs_order.py`
 ```
