@@ -73,10 +73,10 @@ def find_and_plot_min_z_in_grids(file_name):
     ax.yaxis.set_minor_formatter(plt.FuncFormatter(lambda y, _: f"{math.ceil(y_min + y)}"))
 
     fig.colorbar(cax)
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
+    ax.set_xlabel('X-Si coordination number')
+    ax.set_ylabel('X-O coordination number')
     ax.xaxis.tick_bottom()
-    plt.title('Scaled minimum z values in each grid')
+    plt.title('Free energy')
     plt.show()
 
 # 调用函数
