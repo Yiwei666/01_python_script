@@ -33,7 +33,7 @@ print("""
       """)
 
 # 加载数据
-data = np.loadtxt('editColvar.txt')   # 
+data = np.loadtxt('fes.dat')   # 
 x = data[:, 0]
 y = data[:, 1]
 z = data[:, 2]*4.3597*6.022*100
@@ -57,8 +57,8 @@ ax = fig.add_subplot(111, projection='3d')
 ax.plot_trisurf(x, y, z, cmap='viridis')
 
 # 添加标签和标题
-ax.set_xlabel('Z-axis component')
-ax.set_ylabel('Mg-O coordination number')
+ax.set_xlabel('X-Si coordination number')
+ax.set_ylabel('X-O coordination number')
 ax.set_zlabel('Energy (kJ/mol)')
 ax.set_title('3-dimension contour and surface plot')
 
