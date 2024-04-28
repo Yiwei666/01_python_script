@@ -158,6 +158,12 @@ Mg         0.3604        1.99    2.82
 
 ### `55_plot_min_z_grid_values.py`
 
+注意该脚本绘制的热图单元格中的数据标签与x轴和y轴上的刻度不一致，需要优化
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240428-183818.png" alt="Image Description" width="800">
+</p>
+
 
 
 
