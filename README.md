@@ -170,9 +170,22 @@ Mg         0.3604        1.99    2.82
 
 
 ### `55_[指定x和y范围]自由能面局域极小值计算.py`
+
+1. 通过gnuplot大概判断局域极小值的x和y取值范围
+2. 在`55_plot_min_z_grid_values.py`脚本中初始化如下代码参数，包括x和y的局域极小值的大概范围
 ```
+find_min_z_and_corresponding_x_and_y(4, 6, 3, 5, 'fes.dat')
+```
+3. 如下所示为显示示例，打印z的局域极小值
 
 ```
+Minimum z value for x in range [4, 6] and y in range [3, 5]: -0.9265716133
+Corresponding x value: 4.881
+Corresponding y value: 4.063
+Product of minimum z with 4.3597*6.022*100: -2432.632
+```
+
+
 
 ### `55_自由能面局域极小值计算.py`
 ```
