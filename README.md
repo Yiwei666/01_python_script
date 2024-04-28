@@ -148,8 +148,13 @@ Mg         0.3604        1.99    2.82
 
 ### `55_plot_min_fes.py`
 
+从`fes.dat`文件中读取三维坐标数据（x, y, z），并在二维网格上找到并可视化每个网格内的最小z值
 
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240428-183307.png" alt="Image Description" width="600">
+</p>
 
+相比于 `55_plot_min_z_grid_values.py`，热图单元格中的数据标签与x和y轴的刻度是正确对应的
 
 ### `55_plot_min_z_grid_values.py`
 
