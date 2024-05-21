@@ -278,6 +278,20 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
       -1: 测试
 ```
 
+🟢 **建模流程**
+
+1. 参考materials project、GPT4、谷歌学术等，找到最稳定氧化物
+- MP教程：https://github.com/Yiwei666/01_python_script/wiki/07_Materials-project
+- 相图网址：https://next-gen.materialsproject.org/phasediagram
+
+2. 确定均相或两相体系的组分以及摩尔数
+
+3. 向 `49_[扩展-1化合物原子组成数据库]单质或化合物或多相混合体系密度计算.json` 数据库中添加稳定氧化物的组成，例如PtO2
+
+4. 利用factsage的`View Data模块`查找各氧化物组元的密度，并写入到 `49_[扩展-2化合物密度数据库]单质或化合物或多相混合体系密度计算.json` 数据库中。
+
+5. 对于文献中或者factsage的`View Data模块`缺失的化合物密度，例如PtO2，可以尝试使用`Reaction模块`计算体积数据进行倒推。注意：`Materials project`上提供每种晶体结构的密度数据。
+
 
 
 ### `49_[扩展]单质或化合物或多相混合体系密度计算.py` 
