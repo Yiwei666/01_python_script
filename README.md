@@ -283,7 +283,7 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
 1. 参考materials project、GPT4、谷歌学术等，找到最稳定氧化物
 
 <p align="center">
-<img src="https://19640810.xyz/05_image/01_imageHost/20240426-202833.png" alt="Image Description" width="400">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240426-202833.png" alt="Image Description" width="500">
 </p>
 
 - MP教程：https://github.com/Yiwei666/01_python_script/wiki/07_Materials-project
