@@ -110,7 +110,7 @@ def chemicalsSplit(missMoleList):   # 传入需要添加化合物组成的列表
             chemDict[molFormula][keyEle] = valueEle
         chemDict[molFormula]['total'] = str(sum(oddList))    # 注意此处要将数值型变量转化为字符串变量，否则调用json.dump()函数会报错
     print('------化合物分子式的原子组成字典------：',chemDict)   # chemDict = {'SiO2': {'Si': '1', 'O': '2', 'total': 3}, 'CaO': {'Ca': '1', 'O': '1', 'total': 2}, 'B2O3': {'B': '2', 'O': '3', 'total': 5}}
-    return chemDict                                    # 返回的字典是一个分子式的原子组成字典
+    return chemDict                                          # 返回的字典是一个分子式的原子组成字典
 
 
 """
@@ -188,10 +188,13 @@ def atomMakeupDict(atomicMassSingleDict,DBfilename,elementDict):   # 输入的3�
     # 判断输入的字符串活字典中的组元构成情况
     if len(simpleSubList) == 0:
         print('混合体系不存在单质组元，所有组元均为化合物。')
+        print('所有组元: ', chemSubList)
     elif len(chemSubList) == 0:
         print('混合体系所有组元均为单质，不存在化合物。')
+        print('所有组元: ', simpleSubList)
     else:
         print('混合体系中既有单质组元也有化合物组元。')
+        print('所有组元: ', simpleSubList, chemSubList)
     #     
     if len(missMoleList) == 0:
         print('~~~~~~~~~所有化合物组元均在原子组成数据库内,原子组成数据库如下：',sorted(list(atomDict.keys()))) # json文件中的数据
@@ -212,7 +215,7 @@ def atomMakeupDict(atomicMassSingleDict,DBfilename,elementDict):   # 输入的3�
         else:
             print('未添加新的化合物原子构成',plusDict)
     print('\n')
-    return atomDict,chemSubList    # 返回更新后的化合物组成字典,以及所有输入的化合物分子式列表，二者位于一个列表中
+    return atomDict,chemSubList,simpleSubList    # 返回更新后的化合物组成字典,以及所有输入的化合物分子式列表，以及混合体系中单质列表，三者位于一个列表中
     # chemSubList = jsonMoleList + missMoleList，例如：{'CaO':'16','SiO2':'16'}
     # atomDict = { **atomDict, **plusDict } ，例如 {'SiO2': {'Si': '1', 'O': '2', 'total': 3}, 'CaO': {'Ca': '1', 'O': '1', 'total': 2}, 'B2O3': {'B': '2', 'O': '3', 'total': 5}}
 
@@ -243,6 +246,36 @@ def moleMassCalc(atomMassDict,moleCompDict,molecuList):   # 04函数，atomMassD
     return moleMassDict  # return 返回化合物的相对分子质量字典，例如，moleMassDict = {'SiO2': ['1', 'null', 'SiO2', '60.0843'], 'CaO': ['2', 'null', 'CaO', '56.077400000000004']}
 
 
+
+# 04-1函数，衍生于04函数（moleMassCalc），主要计算组元为氧化物的硅酸盐体系中各原子的数量，以及总原子数量。Material studio建模需要输入各类原子数量
+# elementDict = {'SiO2': '40', 'CaO': '43', 'Mg': '8', 'Si': '42'}
+# moleCompDict = {'SiO2': {'Si': '1', 'O': '2', 'total': 3}, 'CaO': {'Ca': '1', 'O': '1', 'total': 2}, 'B2O3': {'B': '2', 'O': '3', 'total': 5}}
+# molecuList = ['CaO', 'SiO2']
+# simpleSubList = ['Si', 'B'] 
+def totalNumbeofMolecule(moleCompDict,elementDict,molecuList,simpleSubList):
+    print('|----------------------------------------调用函数：totalNumbeofMolecule')
+    # for i,j in enumerate(molecuList):        # 遍历待计算相对分子质量的分子式列表
+    chemAtomNumberDict = {}
+    for i in molecuList:                                # 遍历化合物
+        moleculeNumber = int(elementDict[i])            # 确定化合物数量
+        for j in list(moleCompDict[i].keys()):          # 遍历元素符号
+            if j not in list(chemAtomNumberDict.keys()):      # 如果符号不存在
+                chemAtomNumberDict[j] = int(moleCompDict[i][j])*moleculeNumber
+            else:
+                chemAtomNumberDict[j] = chemAtomNumberDict[j] + int(moleCompDict[i][j])*moleculeNumber
+                
+    for k in simpleSubList:
+        simpleAtomNumber = int(elementDict[k]) 
+        if k not in list(chemAtomNumberDict.keys()):      # 如果符号不存在
+            chemAtomNumberDict[k] = simpleAtomNumber
+            chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber
+        else:
+            chemAtomNumberDict[k] = chemAtomNumberDict[k] + simpleAtomNumber
+            chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber
+    
+    print('体系组元', elementDict)
+    print('体系原子组成', chemAtomNumberDict)
+    return chemAtomNumberDict
 
 
 """
@@ -442,7 +475,7 @@ def densityMixCalc(atomicMassDict,pureDensityDict,elementDict):
         mρMixMultiList.append(mρMixMulti)                                  # 将分母的每一部分添加到列表中
     mρMixMultiSum = sum(mρMixMultiList)   # 对列表中分母的每一部分进行求和，m1*ρ2*ρ3*ρ4*ρ5 + m2*ρ1*ρ3*ρ4*ρ5+m3*ρ1*ρ2*ρ4*ρ5+m4*ρ1*ρ2*ρ3*ρ5+m5*ρ1*ρ2*ρ3*ρ4
     densityMix = ρMultipl*mSum/mρMixMultiSum                               # 计算体系的混合密度      
-    print('|-----------基于等体积混合计算的密度------------|',int(elementKindNumber),"种组元混合密度：",round(densityMix,5),'单位:g/cm3\n')
+    print('|-----------基于等体积混合计算的密度------------|',int(elementKindNumber),"种组元混合密度：",round(densityMix,4),'单位:g/cm3\n')
     '''
     计算混合体系以正方体计的盒子体积和边长
     '''
@@ -457,16 +490,16 @@ def densityMixCalc(atomicMassDict,pureDensityDict,elementDict):
     massPercentDict = {}
     for i in range(1,int(elementKindNumber)+1):
         # massPercent1 = m1/(m1+m2+m3+m4+m5)*100
-        massPercentDict[elementListDict["element"+str(i)]] = mDict["m"+str(i)]/mSum*100
-    print("各组元质量百分数%",massPercentDict)      
+        massPercentDict[elementListDict["element"+str(i)]] = round(mDict["m"+str(i)]/mSum*100, 4)
+    print("各组元质量百分数%", massPercentDict)      
     """
     各组元摩尔百分数
     """
     molPercentDict = {}
     for i in range(1,int(elementKindNumber)+1):
     #   molPercent1 = float(elementNumber1)/(float(elementNumber1)+float(elementNumber2)+float(elementNumber3)+float(elementNumber4)+float(elementNumber5))*100
-        molPercentDict[elementListDict["element"+str(i)]] = float(elementNumberDict["elementNumber"+str(i)])/atomicNumberSum*100
-    print("各组元摩尔百分数%",molPercentDict)
+        molPercentDict[elementListDict["element"+str(i)]] = round(float(elementNumberDict["elementNumber"+str(i)])/atomicNumberSum*100, 4)
+    print("各组元摩尔百分数%", molPercentDict)
     # relativeAtomicMass = mSum
     # print("混合体系相对分子质量为",relativeAtomicMass,"体系构成：",elementDict)
 
@@ -496,7 +529,7 @@ def factDensityCalc(saveDict):
         sizeCellFactsage = math.pow(factsageVolume/NA*1000,1/3)*1e8   #   单位Å,
         print("Factsage计算的盒子尺寸: ",round(sizeCellFactsage,5), '单位:Å' )
         densityMixFactsage = mSum/factsageVolume/1000                 # 摩尔质量除以摩尔体积，得到密度，除以1000得到cm3单位
-        print("|-----------基于Factsage计算的混合密度---------|",round(densityMixFactsage,5), ' 单位:g/cm3')
+        print("|-----------基于Factsage计算的混合密度---------|",round(densityMixFactsage,4), ' 单位:g/cm3')
         densityDifference = densityMix-densityMixFactsage     # 比较两种方法计算的密度差值
         # print("------两种密度差值,densityMix-densityMixFactsage--------",round(densityDifference,6),' 单位:g/cm3')
         if abs(densityDifference) <= 0.001:
@@ -827,6 +860,9 @@ if __name__ == '__main__':
         atomMakeupDict_result = atomMakeupDict(atomicMassSingleDict,dataBaseFile1,elementDict)   # 调用10函数，返回所有json以及新添加的化合物组成字典
         atomDict = atomMakeupDict_result[0]                                    # 返回更新后的化合物原子组成字典
         chemSubList = atomMakeupDict_result[1]                                 # 返回输入的化合物分子式列表
+        pureSubstanceSymbolList = atomMakeupDict_result[2]                     # 返回输入的单质符号列表
+        
+        # totalMixAtomNumber = totalNumbeofMolecule(atomDict,elementDict,chemSubList,pureSubstanceSymbolList)
         
         # 接下来是调用04函数moleMassCalc()计算输入的所有化合物的相对分子质量
         # atomicMassOxideDict是相对分子质量数据库字典，形式如下一行所示，该数据库是建立在相对原子质量数据库的基础之上，通过调用04函数moleMassCalc()实现。
@@ -906,16 +942,16 @@ if __name__ == '__main__':
             print("您选择的数据库超出范围，请重新选择")
             sys.exit("404")
     
-    
         saveDict = densityMixCalc(atomicMassDict,pureDensityDict,elementDict)   # 调用06函数，计算混合体系密度，需要知道所有组元的相对质量和密度
         factDensityCalc(saveDict)  # 调用07函数，基于factsage计算混合密度
-
+        
+        # 调用 04-1函数totalNumbeofMolecule函数，atomDict，chemSubList，pureSubstanceSymbolList形参对应于 10函数 atomMakeupDict 返回列表中的三个字典
+        totalMixAtomNumber = totalNumbeofMolecule(atomDict,elementDict,chemSubList,pureSubstanceSymbolList)   # 计算混合体系原子组成，Materials Studio建模时需要
+        
+        # 打印当前时间
+        current_datetime = datetime.datetime.now()
+        formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        print("当前日期：",formatted_datetime)
     
     else:
         print("提示：您选择的功能正在开发，请重新选择！")
-
-
-
-
-
-
