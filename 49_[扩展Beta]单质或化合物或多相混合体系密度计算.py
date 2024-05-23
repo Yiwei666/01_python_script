@@ -256,23 +256,35 @@ def totalNumbeofMolecule(moleCompDict,elementDict,molecuList,simpleSubList):
     print('|----------------------------------------调用函数：totalNumbeofMolecule')
     # for i,j in enumerate(molecuList):        # 遍历待计算相对分子质量的分子式列表
     chemAtomNumberDict = {}
-    for i in molecuList:                                # 遍历化合物
-        moleculeNumber = int(elementDict[i])            # 确定化合物数量
-        for j in list(moleCompDict[i].keys()):          # 遍历元素符号
-            if j not in list(chemAtomNumberDict.keys()):      # 如果符号不存在
-                chemAtomNumberDict[j] = int(moleCompDict[i][j])*moleculeNumber
-            else:
-                chemAtomNumberDict[j] = chemAtomNumberDict[j] + int(moleCompDict[i][j])*moleculeNumber
-                
-    for k in simpleSubList:
-        simpleAtomNumber = int(elementDict[k]) 
-        if k not in list(chemAtomNumberDict.keys()):      # 如果符号不存在
-            chemAtomNumberDict[k] = simpleAtomNumber
-            chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber
-        else:
-            chemAtomNumberDict[k] = chemAtomNumberDict[k] + simpleAtomNumber
-            chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber
     
+    if len(molecuList) != 0:                                # 适用于 1.纯化合物体系 或者 2.单质与化合物混合体系
+        for i in molecuList:                                # 遍历化合物
+            moleculeNumber = int(elementDict[i])            # 确定化合物数量
+            for j in list(moleCompDict[i].keys()):          # 遍历元素符号
+                if j not in list(chemAtomNumberDict.keys()):      # 如果符号不存在
+                    chemAtomNumberDict[j] = int(moleCompDict[i][j])*moleculeNumber
+                else:
+                    chemAtomNumberDict[j] = chemAtomNumberDict[j] + int(moleCompDict[i][j])*moleculeNumber
+                    
+        for k in simpleSubList:
+            simpleAtomNumber = int(elementDict[k]) 
+            if k not in list(chemAtomNumberDict.keys()):      # 如果符号不存在
+                chemAtomNumberDict[k] = simpleAtomNumber
+                chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber
+            else:
+                chemAtomNumberDict[k] = chemAtomNumberDict[k] + simpleAtomNumber
+                chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber
+    else:                                                   # 纯单质混合体系，即 len(molecuList) == 0
+        chemAtomNumberDict['total'] = 0
+        for x in simpleSubList:
+            simpleAtomNumber = int(elementDict[x]) 
+            if x not in list(chemAtomNumberDict.keys()):      # 如果符号不存在
+                chemAtomNumberDict[x] = simpleAtomNumber
+                chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber
+            else:
+                chemAtomNumberDict[x] = chemAtomNumberDict[x] + simpleAtomNumber
+                chemAtomNumberDict['total'] = chemAtomNumberDict['total'] + simpleAtomNumber        
+
     print('体系组元', elementDict)
     print('体系原子组成', chemAtomNumberDict)
     return chemAtomNumberDict
@@ -955,3 +967,4 @@ if __name__ == '__main__':
     
     else:
         print("提示：您选择的功能正在开发，请重新选择！")
+
