@@ -108,7 +108,8 @@
 2. 使用VMD处理.xyz文件，将原子的真实运动轨迹转换为周期性轨迹，此过程需要使用盒子边长，参考命名方式`59_SiHfB(0-500).xyz`。在VMD窗口中输入以下命令，
 
 ```
-pbc set {a b c alpha beta gamma } -all   #对所有帧添加晶胞信息。pbc wrap -all  # 获取周期性结构。
+pbc set {a b c alpha beta gamma } -all     # 对所有帧添加晶胞信息
+pbc wrap -all                              # 获取周期性结构
 ```
 
 3. 处理.ener文件，获取温度变化信息。打开spyder，运行12_ener文件绘温度能量图.py 脚本，获取温度、能量随模拟时间的变化。
