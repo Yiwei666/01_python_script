@@ -21,8 +21,11 @@ def process_data_file(filename, r_min):
         else:
             y.append(np.nan)
 
-    # 将第一列数据和新得到的第二列数据保存到pmf.txt文件中
-    np.savetxt("pmf.txt", np.column_stack((r, y)), fmt='%.6f', delimiter=' ')
+    # 构建新文件名
+    new_filename = "pmf_" + filename + ".txt"
+
+    # 将第一列数据和新得到的第二列数据保存到新文件中
+    np.savetxt(new_filename, np.column_stack((r, y)), fmt='%.6f', delimiter=' ')
 
     # 绘制图表
     plt.figure()
