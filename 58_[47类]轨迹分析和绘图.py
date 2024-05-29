@@ -75,7 +75,8 @@ class Xyz():
         self.zCell = float(self.replace.split( )[2])   # 假设输入的晶格为正交，三边长分别用空格分隔，此变量为z分量，注意数据类型转变，字符串转浮点数
         
         with open(self.name, 'r') as f:
-            lines = f.readlines()
+            # lines = f.readlines()
+            lines = [line.rstrip('\n') for line in f.readlines()]
             self.xyzList = lines                       # 轨迹文件列表实例化，即所有行写成一个列表
             self.length = len(lines)                   # 列表长度
             self.firstline = int(lines[0])             # 第一帧第一行的数字，即第一帧原子数
@@ -98,10 +99,17 @@ class Xyz():
         self.allFrameDict = iaDict                     # 将每一帧的第一行对应的行数、原子数、以及对应帧的所有行写成字典
         self.firstLineIndex = lineIndexList            # 列表，用于储存每一帧中首行的对应行数的index，从0开始
         '''
+        self.allFrameDict = iaDict
+        {
+            1: [1, 2, ['2', '11.2 11.2 11.2', 'Si 0 0 0', 'Ca 1 1 1']], 
+            2: [5, 2, ['2', '11.2 11.2 11.2', 'Si 2 2 2', 'Ti 3 3 3']]
+         }
+
         xyzDict是一个字典，称为父字典，其键为帧数，键为1对应第1帧，对应的值是一个字典，称为子字典
         父字典对应键为0的值为一个数值，对应该xyz文件的总帧数
         子字典对应每一帧的每个原子坐标，子字典中键为1对应第一个原子
-        子字典对应键为0的值是一个数值，是相应帧数的原子数        
+        子字典对应键为0的值是一个数值，是相应帧数的原子数     
+
         '''
         xyzDict = {} # 将每一帧的每一个原子坐标写成字典，键是帧数，值是一个子字典，子字典中的键是原子序号，从1开始，值是对应原子坐标。子字典键为0对应的值是对应帧的原子数
         xyzDict[0] = self.frameNumber                                # 将父字典键为0对应的值设为帧数
@@ -113,7 +121,16 @@ class Xyz():
                 xyzDict[iframe][iatom-1] = perAtomxyz                # 由于iatom是从2开始计数，iatom-1就是起始原子编号，即从1开始
         self.xyzDict = xyzDict                                       # 将字典变量设为全局变量，该字典包含每一帧中各原子的xyz坐标，各分坐标以列表形式储存
         # self.allFrameDict = {1: [1, 224, ['224\n', 'Frame 0 cell_orig 0.0 0.0 0.0 cell_vec1 16.4477223556 0.0 0.0 cell_vec2 0.0 16.4477223556 0.0 cell_vec3 0.0 0.0 16.4477223556 pbc 1 1 1\n', 'Si 2.3983325131 5.0877985511 13.791799328\n', 
-        
+        '''
+        xyzDict
+        {
+            0: 3, 
+            1: {0: 2, 1: ['Si', '0', '0', '0'], 2: ['Ca', '1', '1', '1']}, 
+            2: {0: 2, 1: ['Si', '2', '2', '2'], 2: ['Ti', '3', '3', '3']}, 
+            3: {0: 3, 1: ['H', '3.1', '2.2', '1'], 2: ['B', '4.1', '2.5', '6.6'], 3: ['P', '1.1', '2.2', '3.3']}
+        }
+        '''
+
 
     # -1 方法    
     def test(self):                                    # 该方法主要用于测试
@@ -129,7 +146,7 @@ class Xyz():
         
         self.periodicBox("1 -1 1 -1 1 -1","F")    # self.periodicBox(multiple,saveChoose),调用子方法中的全局变量前必须对子变量进行初始化
         # print(self.xyzSuperDict[2][400],self.xyzDict[2][15])
-        print("每一帧的原子数、所在行的行数及该帧所有元素字典，注意索引等于行数减去1：",self.allFrameDict)
+        print("该字典包含每一帧中各原子的xyz坐标，各分坐标以列表形式储存：",self.xyzDict)
         # 括增前后两个子字典值的区别，xyzSuperDict不仅包含扩增后的坐标，还包含扩增倍数，扩增前的原子序号和原子坐标
         # self.xyzDict[2][15] = ['Si', '15.896150', '10.830315', '16.041859']
         # self.xyzSuperDict[2][400] = ['Si', 32.34385, 10.830315, -0.40584100000000234, [1, 0, -1], 15, ['Si', '15.896150', '10.830315', '16.041859']] 
@@ -288,6 +305,11 @@ class Xyz():
         yList = sorted(list(set([j for j in range(yn,1)] + [i for i in range(0,yp+1)] )))
         zList = sorted(list(set([j for j in range(zn,1)] + [i for i in range(0,zp+1)] )))
         # print('xList,yList,zList分别为',xList,yList,zList)
+        '''
+        # xList = [-2, -1, 0, 1]
+        # yList = [-1, 0, 1, 2, 3]
+        # zList = [-1, 0, 1, 2, 3, 4]
+        '''
         boxNumber = len(xList)*len(yList)*len(zList)
         boxDict = {}
         for d in range(1,boxNumber+1):     # 初始化为列表
@@ -301,11 +323,29 @@ class Xyz():
                     boxDict[icount].append(z)
                     icount = icount +1
         # print('扩增盒子字典：',boxDict)
-      
+        '''
+        {
+            1: [-2, -1, -1],
+            2: [-2, -1, 0],
+            3: [-2, -1, 1],
+            # ...
+            119: [1, 3, 3],
+            120: [1, 3, 4]
+        }
+        '''
         superTrajList = []             # 初始化一个字典，字典包含了盒子扩增后轨迹文件所有行都在内的列表，类似于self.xyzList
         xyzSuperDict = {}              # 初始化一个超级字典，用于储存扩增后的盒子信息，类似于xyzDict储存括增前每一帧的原子坐标等信息
         xyzSuperDict[0] = self.frameNumber      # 1.扩增后的总帧数，跟扩增前一样，扩增不改变帧数
         for i in range(1,self.frameNumber+1):                               # 最外层先遍历帧数
+            '''
+            xyzDict
+            {
+                0: 3, 
+                1: {0: 2, 1: ['Si', '0', '0', '0'], 2: ['Ca', '1', '1', '1']}, 
+                2: {0: 2, 1: ['Si', '2', '2', '2'], 2: ['Ti', '3', '3', '3']}, 
+                3: {0: 3, 1: ['H', '3.1', '2.2', '1'], 2: ['B', '4.1', '2.5', '6.6'], 3: ['P', '1.1', '2.2', '3.3']}
+            }
+            '''
             superTrajList.append(str(self.xyzDict[i][0]*boxNumber)+'\n')    # 2.添加每一帧的原子数，盒子数*每个盒子的原子数，对应每一帧第一行
             superTrajList.append(self.replace + '\n')                       # 3.添加盒子信息，对应每一帧第二行
             xyzSuperDict[i] = {}                                            # 初始化子字典，用于储存原子坐标
@@ -522,6 +562,131 @@ class Xyz():
             for i,j in enumerate(finalExtractList):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
                 new_file.write(j)      
         print("目标原子局域结构输出文件已保存！") 
+
+
+
+    # 15方法：实时计算每一帧中指定原子对的配位数，该方法考虑了周期性，该方法使用了方法7中的全局环境变量，该方法在方法14：RijperiodicExtract(self,result,atomNumberRange)基础上进行修改
+    def mtd_coordination_colvar(self,result,atomNumberRange):
+        '''
+        该方法依赖于方法7 self.periodicBox("1 -1 1 -1 1 -1","F") 中定义的扩增后的原子轨迹字典 self.xyzSuperDict
+        该方法中暂未定义可供其他方法使用的有价值的全局变量
+        '''
+        self.result = result   # result = [['Si', 'Si', 'Si'], ['0', 'Si', 'Ca'], [2.5, 3.0, 5.0]]  分别是中心原子，配位原子和截断半径
+        self.atomNumberRange = atomNumberRange
+        self.periodicBox("1 -1 1 -1 1 -1","F")         # 需要调用07方法，因此要进行初始化，初始化时要进行一些默认参数的设置，第一个参数代表扩增的倍数
+        # print(type(self.xyzSuperDict[0]),type(self.xyzSuperDict[1][0]),self.xyzSuperDict[1][0])   # 测试用的print
+        # print(self.xyzSuperDict[1][1],type(self.xyzSuperDict[1][1][1]))                           # 测试用的print
+
+        def coordination_mtd(r_ij, d_AB, NN, ND):
+            # Calculate the numerator part of the formula
+            p = NN
+            q = ND - NN
+            numerator = 1 - (r_ij / d_AB) ** p
+            
+            # Calculate the denominator part of the formula
+            denominator = 1 - (r_ij / d_AB) ** (p + q)
+            
+            # Return the final result of the function
+            return numerator / denominator
+        
+        # Example usage of the function
+        # r_ij = 0.5
+        # d_AB = 1.0
+        # Prompt the user to input p and q values separated by a space
+        user_input = input("Please enter the values for NN and ND separated by a space: ")
+        # Split the input string into a list where the first element is p and the second is q
+        NN, ND = map(float, user_input.split())
+        
+        
+        rij_coordinationDict = {}                             # 该字典用于储存每一帧中各中心与配位原子对的配位数
+        rij_coord_outputDict = {}                             # 进一步计算 rij_coordinationDict 保存的数据
+        for u in range(1,self.xyzSuperDict[0] +1):
+            rij_coordinationDict[u] = {}                      # 每一帧中可能有好几种原子对，每一种原子对都用一个字典来管理
+            rij_coord_outputDict[u] = {}
+            for x,y in zip(self.result[0],self.result[1]):
+                atom_pair = x +"-"+ y
+                rij_coordinationDict[u][atom_pair] = []       # 给每一种中心原子及其配位原子的距离初始化一个列表，包含中心原子与其本身形成的原子对
+                rij_coord_outputDict[u][atom_pair] = {}
+        
+        finalExtractList = []                          # 构建一个列表，用于储存每一帧中满足截断半径要求的原子轨迹信息
+        for i in range(1,self.xyzSuperDict[0] +1):     # 帧数循环
+            # print(self.xyzSuperDict[0])
+            # print(self.xyzSuperDict[i][0])
+            iExtract = 0                               # 该参数用于计数，即每一帧中在截断半径内的原子数量
+            newExtractList = []                        # 该列表用于储存每一帧中满足截断半径要求的原子信息，该列表每一帧要重新释放置零并重新赋值
+            totalExtractList = []           
+            for j in range(1,self.xyzSuperDict[i][0]+1):   # 每一帧中的原子循环，self.xyzSuperDict[i][0]代表扩增后盒子轨迹第i帧的原子数
+                eName = self.xyzSuperDict[i][j][0]         # 计算第i帧中第j个原子的元素符号和各分坐标
+                ex = self.xyzSuperDict[i][j][1]            # 针对每一帧，分别将每个原子与传入的目标原子的距离进行比较
+                ey = self.xyzSuperDict[i][j][2]
+                ez = self.xyzSuperDict[i][j][3]
+                # print(eName,ex,ey,ez)
+                for l in self.atomNumberRange:             # self.atomNumberRange是传入的目标原子编号列表，即计算这些原子截断半径范围内的配位原子
+                    lName = self.xyzDict[i][l][0]
+                    lx = float(self.xyzDict[i][l][1])
+                    ly = float(self.xyzDict[i][l][2])
+                    lz = float(self.xyzDict[i][l][3])
+                    distance = math.sqrt(((ex-lx)**2)+((ey-ly)**2)+((ez-lz)**2))                  # 计算两个原子间的距离
+                    # print(distance)
+                    # print(lName,lx,ly,lz)
+                    """
+                    1.设置原子截断半径的中心原子种类 result[0] 范围要大于等于 编号对应的原子种类 atomNumberRange
+                    2.注意编号的中心原子的计算
+                    """
+                    
+                    if lName not in self.result[0]:            # 如果编号对应的中心原子与原子对中的中心原子种类不符合，则中断。
+                        print("设置原子对截断半径的中心原子种类 与 输入原子编号对应的中心原子种类不符")
+                        print("报错的原子编号以及原子种类为：",l,lName)
+                        sys.exit(1)                            # 终止程序，返回退出码 1
+
+                    if eName == lName and distance < 0.01:     # 单位是埃，理论上应该设为0，筛选出编号原子
+                        iExtract = iExtract +1                 # 对满足截断半径的原子进行计数
+                        newExtractList.append(eName+' '+str(ex)+' '+str(ey)+' '+str(ez)+'\n')     # 将满足要求的原子信息添加到列表中
+                        continue                               # 当编号的中心原子和配位原子是同一原子时，跳出本次循环
+
+                    for icount,icenter in enumerate(self.result[0]):                       # 遍历result[0]-result[1]中对应的每一个原子对
+                        if icenter == lName and self.result[1][icount] == eName:           # 判断result[0]-result[1] 原子对和 l-j 原子对是否相同
+                            if self.xCell/2 >= distance:                         # 判断距离是否满足截断半径
+                                r_ij = distance
+                                d_AB = self.result[2][icount]
+                                perCoordination = coordination_mtd(r_ij, d_AB, NN, ND)
+                                rij_coordinationDict[i][lName+"-"+eName].append(perCoordination)
+                                iExtract = iExtract +1                                                    # 对满足截断半径的原子进行计数
+                                newExtractList.append(eName+' '+str(ex)+' '+str(ey)+' '+str(ez)+'\n')     # 将满足要求的原子信息添加到列表中
+
+        '''
+            totalExtractList.append(str(iExtract)+'\n')         # 每一帧的第一行添加原子数，每一帧循环结束后添加原子数
+            totalExtractList.append(self.replace+'\n')          # 每一帧的第二行添加晶格信息参数，每一帧循环结束后添加晶格信息
+            finalExtractList = finalExtractList + totalExtractList + newExtractList               # 构建一个集成列表，将每一帧的信息都储存在该列表中
+ 
+        with open(self.saveFile,'w') as new_file:               # 将提取出来的每一帧原子坐标写入到文件中
+            for i,j in enumerate(finalExtractList):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
+                new_file.write(j)      
+        '''
+
+        print("目标原子局域结构输出文件已保存！",rij_coordinationDict)    
+
+        for frame, i in rij_coordinationDict.items():
+            for atomPair,perCoorValueList in i.items():
+                rij_coord_outputDict[frame][atomPair]["total_sum"] = f"{sum(perCoorValueList):.3g}"
+                rij_coord_outputDict[frame][atomPair]["atomPair_number"] = len(perCoorValueList)
+                rij_coord_outputDict[frame][atomPair]["perFrameAverageCN"] = f"{sum(perCoorValueList)/len(self.atomNumberRange):.3g}"   # 需要除以中心原子的总数，对于单个原子是1
+        print(rij_coord_outputDict)
+
+        coordination_output_List = []
+        atomPairList = list(rij_coord_outputDict[1].keys())
+        print("原子对顺序列表：", atomPairList)
+        for frame, atomPairsDict in rij_coord_outputDict.items():
+            output_info = str(frame)+ "   "
+            for i in  atomPairList:
+                output_info = output_info + str(atomPairsDict[i]["perFrameAverageCN"]) + "   "
+            output_info = output_info + '\n'
+            coordination_output_List.append(output_info)
+        
+        with open(self.saveFile,'w') as new_file:               # 将提取出来的每一帧原子坐标写入到文件中
+            for i,j in enumerate(coordination_output_List):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
+                new_file.write(j)   
+
 
 
     # 09方法：计算总的径向分布函数
@@ -1125,6 +1290,7 @@ if __name__ == '__main__':
       12: colvar数据文件等绘图（自选列数），标准colvar文件格式即可
       13: 计算xyz文件所有帧中某个原子到某个平面的距离，平面由三个原子的序号确定
       14: 基于不同原子对的截断半径Rij，提取多帧xyz文件特定编号原子周围半径Rij范围内的配位原子[考虑周期性]，功能 08升级版
+      15: 基于不同原子对的截断半径Rij，计算多帧xyz文件特定编号原子的配位数[考虑周期性]，基于功能 14 改编
       
       -1: 测试
            
@@ -1395,7 +1561,8 @@ if __name__ == '__main__':
         if cellInfo == '' :
             cellInfo = "16.4477 16.4477 16.4477"                                # 设置输入Enter时候的晶格常数默认值
             print("采用默认 16.4477 16.4477 16.4477")
-        print("请为提取后的xyz文件重新命名，输入Enter默认为 08_atomsExtract_PBC.xyz")                        # 提示命令行输入
+
+        print("请为提取后的xyz文件重新命名，输入Enter默认为 14_atomsExtract.xyz")                        # 提示命令行输入
         cellName = input()                                                      # 注意字符串输入变量的数据类型转换
         if cellName == '' :
             cellName = "14_atomsExtract.xyz"                                    # 设置输入Enter时默认的输出文件名
@@ -1449,10 +1616,71 @@ if __name__ == '__main__':
         # 注意此处的rCutoff是一个浮点型数值，并非字符串,atomNumberRange是一个类似于[5, 6, 7, 8, 9, 10]的数字列表    
         xyzFile1.RijperiodicExtract(result,atomNumberRange)   # 注意此处的rCutoff是一个浮点型数值，并非字符串,atomNumberRange是一个类似于[5, 6, 7, 8, 9, 10]的数字列表
 
+    elif defChoose == "15":
+        print("请输出需要添加的晶格信息，输入Enter默认为 16.4477 16.4477 16.4477 ,采用空格分隔")     # 提示命令行输入
+        cellInfo = input()                                                      # 注意字符串输入变量的数据类型转换
+        if cellInfo == '' :
+            cellInfo = "16.4477 16.4477 16.4477"                                # 设置输入Enter时候的晶格常数默认值
+            print("采用默认 16.4477 16.4477 16.4477")
+        
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        print("请为提取的数据文件命名，输入Enter默认为 15_coordination.txt")                        # 提示命令行输入
+        cellName = input()                                                      # 注意字符串输入变量的数据类型转换
+        if cellName == '' :
+            cellName = "15_coordination" + timestamp + ".txt"                                # 设置输入Enter时默认的输出文件名
+            print("采用默认 15_coordination.txt ")    
+        xyzFile1 = Xyz(inputFunction(),cellInfo,cellName)                       # 对类进行实例化        
+        xyzFile1.atomIndexCalc(1)                                               # 调用03方法计算第1帧中的原子序号分布，此处atomIndexCalc方法中的frameNo参数为1
+        print("上述为调用03方法计算第1帧中原子序号分布，接下来为08方法")
+        print("设置原子对的截断半径，输入Enter默认为 3 Å")                          # 提示命令行输入
+        
+        """
+        r = input()                                                             # 注意字符串输入变量的数据类型转换
+        if r == '' :
+            rCutoff = 3
+        else:
+            rCutoff = float(r)                         
+        """
+        
+        # 从用户输入的字符串中提取周期性结构的化学符号和数字，将它们分别存储在不同的列表中，并将这三个列表组合成一个列表。
+        input_str = input("请按中心原子、配位原子、截断半径的顺序输入字符串（以空格分隔，符号和数字总数必须是3的整数倍），如 Si O 2.5 Si Si 3.0 Si Ca 5.0 "+"\n")
+        # 检查输入字符串的符号和数字总数是否是3的整数倍
+        tokens = input_str.split()
+        if len(tokens) % 3 != 0:
+            print("输入格式错误！符号和数字总数必须是3的整数倍。")
+        else:
+            symbols_1 = []
+            symbols_2 = []
+            numbers = []
+        
+            for i in range(0, len(tokens), 3):
+                symbols_1.append(tokens[i])
+                symbols_2.append(tokens[i+1])
+                numbers.append(float(tokens[i+2]))
+        
+            result = [symbols_1, symbols_2, numbers]   # [['Si', 'Si', 'Si'], ['0', 'Si', 'Ca'], [2.5, 3.0, 5.0]]
+            
+            # 打印 symbols_1 中的字符串种类数
+            unique_symbols_1 = set(symbols_1)
+            num_unique_symbols_1 = len(unique_symbols_1)
+            print("中心原子种类数：", num_unique_symbols_1)
+            # 检查 symbols_2 中是否有重复的字符串
+            if len(symbols_2) != len(set(symbols_2)):
+                print("配原子种类有重复！配位原子重复时，中心原子不能重复。")
+                print("中心原子、配位原子和截断半径：",result)
+                # sys.exit(1)                            # 终止程序，返回退出码 1
+            else:
+                print("中心原子、配位原子和截断半径：",result)
+
+        print("请输入想要提取的中心原子编号范围，如 1,2,217-224,300 ，原子编号从1开始，用英文逗号隔开")
+        # inputSplit("1,3,5-10,55-58")
+        atomNumberRange = inputSplit(input())   # input()函数返回的是一个字符串
+        # 注意此处的rCutoff是一个浮点型数值，并非字符串,atomNumberRange是一个类似于[5, 6, 7, 8, 9, 10]的数字列表    
+        xyzFile1.mtd_coordination_colvar(result,atomNumberRange)   # 注意此处的rCutoff是一个浮点型数值，并非字符串,atomNumberRange是一个类似于[5, 6, 7, 8, 9, 10]的数字列表
+
         
     else:
         print("提示：您选择的功能正在开发，请重新选择！")
-        
 
 timeEnd = datetime.datetime.now()          # 显示时间 
 timeDuration = timeEnd - timeStart  
