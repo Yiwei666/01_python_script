@@ -556,7 +556,7 @@ Partial bond order density（PBOD）：各类键的键级总和/模拟盒子体�
 - 周期性边界条件以及周期性扩增的原理示意图如下：
 
 <p align="center">
-<img src="https://19640810.xyz/05_image/01_imageHost/20240529-110246.png" alt="Image Description" width="450">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240529-110246.png" alt="Image Description" width="350">
 </p>
 
 假设盒子的晶格常数分别为a，b，c，如果需要将盒子在x，y和z的（1，1，1）方向扩增一倍，则相应坐标变换为 （x+a，y+b，z+c）
