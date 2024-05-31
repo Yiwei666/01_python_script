@@ -130,7 +130,7 @@ if __name__ == '__main__':
     result_dict = manager.dict()
     
     # 创建进程池
-    pool = multiprocessing.Pool(processes=6)
+    pool = multiprocessing.Pool(processes=5)
 
     # 准备输入数据
     inputs = [[1,fourFramDvid], [fourFramDvid,2*fourFramDvid], [2*fourFramDvid,3*fourFramDvid], [3*fourFramDvid,4*fourFramDvid], [4*fourFramDvid,totalFrameNumber+1]]
