@@ -5,7 +5,7 @@
 # 2. 文件结构
 
 ```
-piecewiseCalc.py                                   # 函数模块，仅包含函数
+piecewiseCalc.py                                  # 函数模块，仅包含函数
 58_sigmoidXYZ轨迹文件配位数多进程计算.py            # 主函数，基于sigmoid计算配位数
 58_piecewiseXYZ轨迹文件配位数多进程计算.py          # 基于piecewise阶跃函数计算配位数
 ```
