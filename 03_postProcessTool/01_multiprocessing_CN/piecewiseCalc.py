@@ -206,6 +206,8 @@ def atomIndexCalc(frameNo, allFrameDict):                      # 可用于计算
     print(firElent[-1],"原子结束于：",totalAtomNo)
 
 
+
+
 def periodicBox(multiple,saveChoose,frameNumber,replace,xyzDict,xyzCellList):                  # 该方法构建一个周期性的盒子，并将其写入字典，saveChoose为“F”或“T”
     '''
     如下，该方法定义了两个比较重要的全局变量
@@ -323,12 +325,32 @@ def periodicBox(multiple,saveChoose,frameNumber,replace,xyzDict,xyzCellList):   
 
 
 
+
+
 def coordination_piecewise(r_ij, d_AB):        # 分段函数，小于等于截断半径，配位数为1，否则为0
     if r_ij <= d_AB:
         return 1
     else:
         return 0    
   
+
+
+
+
+def sigmoid_coordination_mtd(r_ij, d_AB, NN, ND):
+    # Calculate the numerator part of the formula
+    # p = NN
+    # q = ND - NN
+    
+    numerator = 1 - (r_ij / d_AB) ** NN
+    
+    # Calculate the denominator part of the formula
+    denominator = 1 - (r_ij / d_AB) ** ND
+    
+    # Return the final result of the function
+    return numerator / denominator
+
+
 
 
 # atPairCut_Result = self.result
@@ -409,18 +431,75 @@ def process_piecewise_frame(frameNumberList, atPairCut_Result, prexyzDict, grand
     print(result_dict)
 
   
-    
+
+
   
+# xCell 盒子边长
+def process_sigmoid_frame(frameNumberList, atPairCut_Result, prexyzDict, grandxyzDict, inputCenterAtomRange, xCell, NN, ND, result_dict):
+    print(frameNumberList)
+    rij_coordinationDict = {}                             # 该字典用于储存每一帧中各中心与配位原子对的配位数
+    rij_coord_outputDict = {}                             # 进一步计算 rij_coordinationDict 保存的数据
+    for u in range(frameNumberList[0],frameNumberList[1]):
+        rij_coordinationDict[u] = {}                      # 每一帧中可能有好几种原子对，每一种原子对都用一个字典来管理
+        rij_coord_outputDict[u] = {}
+        for x,y in zip(atPairCut_Result[0],atPairCut_Result[1]):
+            atom_pair = x +"-"+ y
+            rij_coordinationDict[u][atom_pair] = []       # 给每一种中心原子及其配位原子的距离初始化一个列表，包含中心原子与其本身形成的原子对
+            rij_coord_outputDict[u][atom_pair] = {}
     
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
+    for i in range(frameNumberList[0],frameNumberList[1]):     # 帧数循环
+        # print(self.xyzSuperDict[0])
+        # print(self.xyzSuperDict[i][0])
+        iExtract = 0                               # 该参数用于计数，即每一帧中在截断半径内的原子数量
+        newExtractList = []                        # 该列表用于储存每一帧中满足截断半径要求的原子信息，该列表每一帧要重新释放置零并重新赋值
+         
+        for j in range(1,grandxyzDict[i][0]+1):   # 每一帧中的原子循环，self.xyzSuperDict[i][0]代表扩增后盒子轨迹第i帧的原子数
+            eName = grandxyzDict[i][j][0]         # 计算第i帧中第j个原子的元素符号和各分坐标
+            ex = grandxyzDict[i][j][1]            # 针对每一帧，分别将每个原子与传入的目标原子的距离进行比较
+            ey = grandxyzDict[i][j][2]
+            ez = grandxyzDict[i][j][3]
+            # print(eName,ex,ey,ez)
+            for l in inputCenterAtomRange:             # self.atomNumberRange是传入的目标原子编号列表，即计算这些原子截断半径范围内的配位原子
+                lName = prexyzDict[i][l][0]
+                lx = float(prexyzDict[i][l][1])
+                ly = float(prexyzDict[i][l][2])
+                lz = float(prexyzDict[i][l][3])
+                distance = math.sqrt(((ex-lx)**2)+((ey-ly)**2)+((ez-lz)**2))                  # 计算两个原子间的距离
+                # print(distance)
+                # print(lName,lx,ly,lz)
+                """
+                1.设置原子截断半径的中心原子种类 result[0] 范围要大于等于 编号对应的原子种类 atomNumberRange
+                2.注意编号的中心原子的计算
+                """
+                
+                if lName not in atPairCut_Result[0]:            # 如果编号对应的中心原子与原子对中的中心原子种类不符合，则中断。
+                    print("设置原子对截断半径的中心原子种类 与 输入原子编号对应的中心原子种类不符")
+                    print("报错的原子编号以及原子种类为：",l,lName)
+                    sys.exit(1)                            # 终止程序，返回退出码 1
+
+                if eName == lName and distance < 0.01:     # 单位是埃，理论上应该设为0，筛选出编号原子
+                    iExtract = iExtract +1                 # 对满足截断半径的原子进行计数
+                    newExtractList.append(eName+' '+str(ex)+' '+str(ey)+' '+str(ez)+'\n')     # 将满足要求的原子信息添加到列表中
+                    continue                               # 当编号的中心原子和配位原子是同一原子时，跳出本次循环
+
+                for icount,icenter in enumerate(atPairCut_Result[0]):                       # 遍历result[0]-result[1]中对应的每一个原子对
+                    if icenter == lName and atPairCut_Result[1][icount] == eName:           # 判断result[0]-result[1] 原子对和 l-j 原子对是否相同
+                        if xCell/2 >= distance:                                             # 判断距离是否满足截断半径，xcell是盒子边长
+                            r_ij = distance
+                            d_AB = atPairCut_Result[2][icount]
+                            perCoordination = sigmoid_coordination_mtd(r_ij, d_AB, NN, ND)  # NN和ND必须要在函数外获取，否则每个新进程中都得按照提示输入
+                            rij_coordinationDict[i][lName+"-"+eName].append(perCoordination)
+                            iExtract = iExtract +1                                                    # 对满足截断半径的原子进行计数
+                            newExtractList.append(eName+' '+str(ex)+' '+str(ey)+' '+str(ez)+'\n')     # 将满足要求的原子信息添加到列表中
+
+    # print("目标原子局域结构输出文件已保存！",rij_coordinationDict)    
+
+    for frame, i in rij_coordinationDict.items():
+        for atomPair,perCoorValueList in i.items():
+            rij_coord_outputDict[frame][atomPair]["total_sum"] = f"{sum(perCoorValueList):.3g}"
+            rij_coord_outputDict[frame][atomPair]["atomPair_number"] = len(perCoorValueList)
+            rij_coord_outputDict[frame][atomPair]["perFrameAverageCN"] = f"{sum(perCoorValueList)/len(inputCenterAtomRange):.3g}"   # 需要除以中心原子的总数，对于单个原子是1
+    # print(rij_coord_outputDict)
+
+    result_dict.update(rij_coord_outputDict)
+    # print(result_dict)
