@@ -677,15 +677,22 @@ class Xyz():
         coordination_output_List = []
         atomPairList = list(rij_coord_outputDict[1].keys())
         print("原子对顺序列表：", atomPairList)
+        aveCoordDict = {i:[] for i in atomPairList}                                                       # 初始化一个字典，将原子对初始化为键，值是空的列表
         print("原子对截断半径 R_0：", self.result)
         for frame, atomPairsDict in rij_coord_outputDict.items():
             output_info = str(frame)+ "   "
             for i in  atomPairList:
                 output_info = output_info + str(atomPairsDict[i]["perFrameAverageCN"]) + "   "
+                aveCoordDict[i].append(float(atomPairsDict[i]["perFrameAverageCN"]))                      # 将每一帧中相应原子对的配位数追加到相应列表中
             output_info = output_info + '\n'
             coordination_output_List.append(output_info)
-        
-        with open(self.saveFile,'w') as new_file:               # 将提取出来的每一帧原子坐标写入到文件中
+
+        average_values = {key: sum(value) / len(value) for key, value in aveCoordDict.items() if value}   # 计算各原子对的配位数平均值
+        print("各原子对的配位数平均值", average_values)                                                      # 打印各原子对配位数平均值 
+        frameNoDict = {key: len(value) for key, value in aveCoordDict.items() if value}                   # 计算帧数，避免多进程遗漏数据
+        print("各原子对帧数: ", frameNoDict)                                                                # 打印各原子对帧数        
+        print("NN和ND: ",NN,ND)
+        with open(self.saveFile,'w') as new_file:                       # 将提取出来的每一帧原子坐标写入到文件中
             for i,j in enumerate(coordination_output_List):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
                 new_file.write(j)   
 
@@ -784,14 +791,20 @@ class Xyz():
         coordination_output_List = []
         atomPairList = list(rij_coord_outputDict[1].keys())
         print("原子对顺序列表：", atomPairList)
+        aveCoordDict = {i:[] for i in atomPairList}                                                       # 初始化一个字典，将原子对初始化为键，值是空的列表
         print("原子对截断半径 R_0：", self.result)
         for frame, atomPairsDict in rij_coord_outputDict.items():
             output_info = str(frame)+ "   "
             for i in  atomPairList:
                 output_info = output_info + str(atomPairsDict[i]["perFrameAverageCN"]) + "   "
+                aveCoordDict[i].append(float(atomPairsDict[i]["perFrameAverageCN"]))                      # 将每一帧中相应原子对的配位数追加到相应列表中
             output_info = output_info + '\n'
             coordination_output_List.append(output_info)
-        
+
+        average_values = {key: sum(value) / len(value) for key, value in aveCoordDict.items() if value}   # 计算各原子对的配位数平均值
+        print("各原子对的配位数平均值", average_values)                                                      # 打印各原子对配位数平均值 
+        frameNoDict = {key: len(value) for key, value in aveCoordDict.items() if value}                   # 计算帧数，避免多进程遗漏数据
+        print("各原子对帧数: ", frameNoDict)                                                                # 打印各原子对帧数
         with open(self.saveFile,'w') as new_file:               # 将提取出来的每一帧原子坐标写入到文件中
             for i,j in enumerate(coordination_output_List):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
                 new_file.write(j)   
