@@ -53,7 +53,7 @@ Mg         0.3604        1.99    2.82
 - 源码：[59_[指定x和y范围]自由能面二维投影图绘制.py](59_[指定x和y范围]自由能面二维投影图绘制.py)
 
 <p align="center">
-<img src="https://19640810.xyz/05_image/01_imageHost/20240606-171233.png" alt="Image Description" width="700">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240606-171233.png" alt="Image Description" width="450">
 </p>
 
 ### `58_[47类]轨迹分析和绘图.py` 
