@@ -647,7 +647,8 @@ class Xyz():
 
                     for icount,icenter in enumerate(self.result[0]):                       # 遍历result[0]-result[1]中对应的每一个原子对
                         if icenter == lName and self.result[1][icount] == eName:           # 判断result[0]-result[1] 原子对和 l-j 原子对是否相同
-                            if self.xCell/2 >= distance:                         # 判断距离是否满足截断半径
+                            # if self.xCell/2 >= distance:                         # 判断距离是否满足截断半径
+                            if abs(ex - lx) < self.xCell/2 and abs(ey - ly) < self.yCell/2 and abs(ez - lz) < self.zCell/2:
                                 r_ij = distance
                                 d_AB = self.result[2][icount]
                                 perCoordination = coordination_mtd(r_ij, d_AB, NN, ND)
