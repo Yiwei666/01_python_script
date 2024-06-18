@@ -434,9 +434,13 @@ def process_piecewise_frame(frameNumberList, atPairCut_Result, prexyzDict, grand
 
 
   
-# xCell 盒子边长
-def process_sigmoid_frame(frameNumberList, atPairCut_Result, prexyzDict, grandxyzDict, inputCenterAtomRange, xCell, NN, ND, result_dict):
+# cellList 盒子边长a，b，c
+def process_sigmoid_frame(frameNumberList, atPairCut_Result, prexyzDict, grandxyzDict, inputCenterAtomRange, cellList, NN, ND, result_dict):
     print(frameNumberList)
+    print("xyz盒子边长分别是", cellList)
+    xCell = cellList[0]
+    yCell = cellList[1]
+    zCell = cellList[2]
     rij_coordinationDict = {}                             # 该字典用于储存每一帧中各中心与配位原子对的配位数
     rij_coord_outputDict = {}                             # 进一步计算 rij_coordinationDict 保存的数据
     for u in range(frameNumberList[0],frameNumberList[1]):
@@ -484,7 +488,8 @@ def process_sigmoid_frame(frameNumberList, atPairCut_Result, prexyzDict, grandxy
 
                 for icount,icenter in enumerate(atPairCut_Result[0]):                       # 遍历result[0]-result[1]中对应的每一个原子对
                     if icenter == lName and atPairCut_Result[1][icount] == eName:           # 判断result[0]-result[1] 原子对和 l-j 原子对是否相同
-                        if xCell/2 >= distance:                                             # 判断距离是否满足截断半径，xcell是盒子边长
+                #       if maxCell/2 >= distance:                                             # 判断距离是否满足截断半径，xcell是盒子边长
+                        if abs(ex - lx) < xCell/2 and abs(ey - ly) < yCell/2 and abs(ez - lz) < zCell/2:      # 考虑到模拟盒子是长方体，要求两个原子间的距离在各个方向上不能超过盒子边长1/2
                             r_ij = distance
                             d_AB = atPairCut_Result[2][icount]
                             perCoordination = sigmoid_coordination_mtd(r_ij, d_AB, NN, ND)  # NN和ND必须要在函数外获取，否则每个新进程中都得按照提示输入
