@@ -41,7 +41,9 @@ if __name__ == '__main__':
     
     xyzFile = xyzImportFile(inputFunction(),cellInfo,cellName)                       # 对类进行实例化        
     # return [[xCell,yCell,zCell],frameNumber,xyzDict,allFrameDict]
-    xCell = xyzFile[0][0]
+    # xCell = xyzFile[0][0]
+    cellList = xyzFile[0]
+    print("盒子边长分别为：", cellList)
     frameNo = 1
     allFrameDict = xyzFile[3]
     atomIndexCalc(frameNo, allFrameDict)
@@ -137,7 +139,7 @@ if __name__ == '__main__':
     for input in inputs:
         # pool.apply_async(process_piecewise_frame, args=(input,result,xyzDict,xyzSuperDict,atomNumberRange,result_dict))
         # def process_sigmoid_frame(frameNumberList, atPairCut_Result, prexyzDict, grandxyzDict, inputCenterAtomRange, cellLength, NN, ND, result_dict):
-        pool.apply_async(process_sigmoid_frame, args=(input,result,xyzDict,xyzSuperDict,atomNumberRange,xCell, NN, ND,result_dict))
+        pool.apply_async(process_sigmoid_frame, args=(input,result,xyzDict,xyzSuperDict,atomNumberRange,cellList, NN, ND,result_dict))
 
     # 关闭进程池，等待所有进程完成
     pool.close()
