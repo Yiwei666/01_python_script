@@ -15,7 +15,7 @@
 
 # 2. 项目文件结构
 
-- **pdos绘图脚本说明：**
+### 1. pdos绘图脚本
 
 ```
 pdos_Plot.py:
@@ -43,7 +43,7 @@ spdf_sumPDOS.py（sumPlot_pdos.py）：
 数据处理对象：经过 new.py 处理后的标准pdos文件（第一行为表头）
 ```
 
-- **pdos后处理脚本说明：**
+### 2. pdos后处理脚本
 
 **1. new.py**
 ```
