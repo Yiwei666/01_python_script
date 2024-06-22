@@ -89,7 +89,7 @@ Usage: ./get-smearing-pdos.py ALPHA.pdos BETA.pdos
 
 inp控制文件输出部分，输出包括DOS态密度，PDOS分波态密度，MOLDEN文件，ELF电子局域化函数，MULLIKEN电荷以及MOMENTS
 
-```
+```bash
     &PRINT
       &DOS
       &END DOS 
