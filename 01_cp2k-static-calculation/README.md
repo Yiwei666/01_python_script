@@ -74,7 +74,7 @@ Usage: ./get-smearing-pdos.py ALPHA.pdos BETA.pdos
          smeared.dat: smeared DOS
 ```
 
-
+### 3. 开壳层-磁性初猜inp文件
 
 **3. Fe2O3.inp：UKS开壳层计算，MAGNETIZATION初猜**
 
