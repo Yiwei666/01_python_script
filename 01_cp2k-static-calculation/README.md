@@ -141,6 +141,41 @@ ELF_S1-1和ELF_S2分别是最高占据轨道和最低空轨道的ELF
 
 ```
 
+### 4. 金属体系对角化不收敛
+
+- 解决办法：
+  - 通过减小 `ALPHA` 值来实现收敛
+  - 通过增大 `MAX_SCF` 值来实现收敛
+
+```
+&SCF
+    MAX_SCF    500
+    EPS_SCF    1.0e-5
+    SCF_GUESS  RESTART
+    &DIAGONALIZATION
+        ALGORITHM STANDARD #Algorithm for diagonalization. DAVIDSON is faster for large systems
+    &END DIAGONALIZATION
+    &MIXING #How to mix old and new density matrices
+        METHOD BROYDEN_MIXING #PULAY_MIXING is also a good alternative
+        ALPHA 0.1 #Default. Mixing 40% of new density matrix with the old one
+        NBROYDEN 8 #Default is 4. Number of previous steps stored for the actual mixing scheme
+    &END MIXING
+    &SMEAR
+        METHOD FERMI_DIRAC
+        ELECTRONIC_TEMPERATURE 300 #Electronic temperature of Fermi-Dirac smearing in K
+    &END SMEAR
+    ADDED_MOS    500  #Number of virtual MOs to solve
+    &PRINT
+        &RESTART ON
+        &END RESTART
+    &END PRINT
+&END SCF
+```
+
+
+
+
+
 # 3. 输出文件分析
 
 alpha-Fe2O3-multiwfn-ALPHA_k2-1.pdos 文件的部分结果如下所示   
