@@ -154,7 +154,7 @@ ELF_S1-1和ELF_S2分别是最高占据轨道和最低空轨道的ELF
   - 通过减小 `ALPHA` 值来实现收敛
   - 通过增大 `MAX_SCF` 值来实现收敛
 
-```
+```bash
 &SCF
     MAX_SCF    500
     EPS_SCF    1.0e-5
@@ -209,7 +209,7 @@ alpha-Fe2O3-multiwfn-ALPHA_k2-1.pdos 文件的部分结果如下所示
 
 ```
 
-```
+```bash
         &PRINT
             &MO_MOLDEN
                 NDIGITS 8
