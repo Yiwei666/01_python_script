@@ -4,7 +4,7 @@
 2. [常用数据集](/02_GPT/03_MachLearn/3-002.md)
 3. [有监督学习](/02_GPT/03_MachLearn/3-003.md)
 4. [深度学习](/02_GPT/03_MachLearn/3-004.md)
-
+5. [循环神经网络](/02_GPT/03_MachLearn/3-005.md)
 
 
 
