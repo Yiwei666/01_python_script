@@ -5,7 +5,7 @@
 3. [有监督学习](/02_GPT/03_MachLearn/3-003.md)
 4. [深度学习](/02_GPT/03_MachLearn/3-004.md)
 5. [循环神经网络](/02_GPT/03_MachLearn/3-005.md)
-6. [](/02_GPT/03_MachLearn/3-006.md)
+6. [tensorflow相关数据集](/02_GPT/03_MachLearn/3-006.md)
 
 
 # 2. 常见无监督学习算法
