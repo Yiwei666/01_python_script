@@ -1,5 +1,7 @@
 # 数据可视化
 
+1. [gnuplot gallery](https://gnuplot.sourceforge.net/demo_5.4/)
+
 # 1. 散点图
 
 ### 1. 散点图+密度叠加图
