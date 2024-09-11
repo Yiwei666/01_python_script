@@ -298,10 +298,11 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
 3. 该脚本能够基于各组元的质量百分比计算摩尔比，可用于建模（功能05）
 
 <p align="center">
-<img src="https://19640810.xyz/05_image/01_imageHost/20240911-101111.png" alt="Image Description" width="700">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240911-101111.png" alt="Image Description" width="800">
 </p>
 
 注意：可以在`total`中查看总原子数，如果运行结果中缺少上述数据，注意检查脚本是否为最新版本。
+
 
 
 :star: 建模流程
