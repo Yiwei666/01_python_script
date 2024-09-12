@@ -265,20 +265,71 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
       -1: 测试
 ```
 
-- 势参数
+**运行示例**
+
+```txt
+输入想要采用的原子顺序，需要与data文件中的一致，用英文逗号隔开，如: Si,B,Ca,O 网络形成体在前，然后是碱金属原子，最后是O原子
+Si,Al,B,Ca,O
+势参数数据库中不存在： Si-Si 或 Si-Si 原子对的势参数
+势参数数据库中不存在： Si-Al 或 Al-Si 原子对的势参数
+势参数数据库存在该原子对势参数 Si-B
+势参数数据库中不存在： Si-Ca 或 Ca-Si 原子对的势参数
+势参数数据库存在该原子对势参数 Si-O
+势参数数据库中不存在： Al-Al 或 Al-Al 原子对的势参数
+势参数数据库中不存在： Al-B 或 B-Al 原子对的势参数
+势参数数据库中不存在： Al-Ca 或 Ca-Al 原子对的势参数
+势参数数据库存在该原子对势参数 Al-O
+势参数数据库存在该原子对势参数 B-B
+势参数数据库中不存在： B-Ca 或 Ca-B 原子对的势参数
+势参数数据库存在该原子对势参数 B-O
+势参数数据库中不存在： Ca-Ca 或 Ca-Ca 原子对的势参数
+势参数数据库存在该原子对势参数 Ca-O
+势参数数据库存在该原子对势参数 O-O
+
+
+set type 1 charge 1.89  # Si
+set type 2 charge 1.4175  # Al
+set type 3 charge 1.4175  # B
+set type 4 charge 0.945  # Ca
+set type 5 charge -0.945  # O
+
+group Si type 1
+group Al type 2
+group B type 3
+group Ca type 4
+group O type 5
+
+pair_coeff   *  *  0.00000000 1.000 0.00000000 # others
+pair_coeff   1  3  337.70  0.29  0.0  # Si-B
+pair_coeff   1  5  50306.10  0.161  46.2978  # Si-O
+pair_coeff   2  5  28538.42  0.172  34.5778  # Al-O
+pair_coeff   3  3  484.40  0.35  0.0  # B-B
+pair_coeff   3  5  206941.81  0.124  35.0018  # B-O
+pair_coeff   4  5  155667.70  0.178  42.2597  # Ca-O
+pair_coeff   5  5  9022.79  0.265  85.0921  # O-O
+```
+
+注意：`输入想要采用的原子顺序，需要与data文件中的一致，用英文逗号隔开，如: Si,B,Ca,O 网络形成体在前，然后是碱金属原子，最后是O原子`，这是因为需要保证`pair_coeff`中第二列原子的编号要比第一列原子编号要大，否则会报错。
+
+
+
+**势参数**
 
 <p align="center">
-<img src="https://19640810.xyz/05_image/01_imageHost/20240912-102112.png" alt="Image Description" width="450">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240912-102112.png" alt="Image Description" width="350">
 </p>
 
 <p align="center">
-<img src="https://19640810.xyz/05_image/01_imageHost/20240912-102306.png" alt="Image Description" width="600">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240912-102306.png" alt="Image Description" width="500">
 </p>
 
 
 **参考资料**
 
 1. Wang M, Krishnan N M A, Wang B, et al. A new transferable interatomic potential for molecular dynamics simulations of borosilicate glasses[J]. Journal of Non-Crystalline Solids, 2018, 498: 294-304.
+
+
+
 
 
 
