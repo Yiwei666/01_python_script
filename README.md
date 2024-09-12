@@ -265,7 +265,7 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
       -1: 测试
 ```
 
-**运行示例**
+**1. 运行示例**
 
 ```txt
 输入想要采用的原子顺序，需要与data文件中的一致，用英文逗号隔开，如: Si,B,Ca,O 网络形成体在前，然后是碱金属原子，最后是O原子
@@ -313,7 +313,7 @@ pair_coeff   5  5  9022.79  0.265  85.0921  # O-O
 
 
 
-**势参数**
+**2. 势参数**
 
 <p align="center">
 <img src="https://19640810.xyz/05_image/01_imageHost/20240912-102112.png" alt="Image Description" width="350">
@@ -324,7 +324,7 @@ pair_coeff   5  5  9022.79  0.265  85.0921  # O-O
 </p>
 
 
-**参考资料**
+**3. 参考资料**
 
 1. Wang M, Krishnan N M A, Wang B, et al. A new transferable interatomic potential for molecular dynamics simulations of borosilicate glasses[J]. Journal of Non-Crystalline Solids, 2018, 498: 294-304.
 
