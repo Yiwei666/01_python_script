@@ -276,7 +276,9 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
 </p>
 
 
+#### 参考资料
 
+1. Wang M, Krishnan N M A, Wang B, et al. A new transferable interatomic potential for molecular dynamics simulations of borosilicate glasses[J]. Journal of Non-Crystalline Solids, 2018, 498: 294-304.
 
 
 
