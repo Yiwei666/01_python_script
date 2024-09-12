@@ -253,7 +253,7 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
 ```
 
 
-### `50_[类]基于势函数数据库导出lammps运行控制in文件.py`
+### 🟢 `50_[类]基于势函数数据库导出lammps运行控制in文件.py`
 ```
   本脚本的功能如下:
       01: 创建json势参数数据库文件，初始内容为 {"charge": {}, "parameter": {}}
@@ -264,6 +264,20 @@ Product of minimum z with 4.3597*6.022*100: -2432.632
       
       -1: 测试
 ```
+
+- 势参数
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240912-102112.png" alt="Image Description" width="450">
+</p>
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240912-102306.png" alt="Image Description" width="600">
+</p>
+
+
+
+
 
 
 ### 🟢 `49_[扩展Beta]单质或化合物或多相混合体系密度计算.py` 
