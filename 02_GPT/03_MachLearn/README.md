@@ -6,6 +6,7 @@
 4. [卷积神经网络](/02_GPT/03_MachLearn/3-004.md)
 5. [循环神经网络](/02_GPT/03_MachLearn/3-005.md)
 6. [tensorflow相关数据集](/02_GPT/03_MachLearn/3-006.md)
+7. [图神经网络](/02_GPT/03_MachLearn/3-007.md)
 
 
 
