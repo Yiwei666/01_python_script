@@ -9,8 +9,15 @@
 7. [图神经网络](/02_GPT/03_MachLearn/3-007.md)
 
 
+# 2. 常见机器学习框架
 
-# 2. 常见无监督学习算法
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20240927-152207.png" alt="Image Description" width="700">
+</p>
+
+
+
+# 3. 常见无监督学习算法
 
 1. 降维算法 (Dimensionality Reduction Algorithms):
 
@@ -45,7 +52,7 @@
 4. 生成对抗网络 (Generative Adversarial Networks, GANs)：由两个神经网络组成，一个生成数据，另一个判别数据，常用于生成接近真实的数据或进行异常检测 。
 
 
-# 3. 参考资料
+# 4. 参考资料
 
 ### 1. 相关文档
 
