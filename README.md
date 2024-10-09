@@ -378,7 +378,7 @@ pair_coeff   5  5  9022.79  0.265  85.0921  # O-O
 :star: **4. 建模流程**
 
 1. 参考materials project、GPT4、谷歌学术等，找到最稳定氧化物
-   - MP教程：[https://github.com/Yiwei666/01_python_script/wiki/07_Materials-project](https://github.com/Yiwei666/12_blog/blob/main/666/6-004.md)
+   - MP教程：https://github.com/Yiwei666/12_blog/blob/main/666/6-004.md
    - 相图网址：https://next-gen.materialsproject.org/phasediagram
 
 <p align="center">
