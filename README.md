@@ -378,29 +378,25 @@ pair_coeff   5  5  9022.79  0.265  85.0921  # O-O
 :star: **4. 建模流程**
 
 1. 参考materials project、GPT4、谷歌学术等，找到最稳定氧化物
+   - MP教程：https://github.com/Yiwei666/01_python_script/wiki/07_Materials-project
+   - 相图网址：https://next-gen.materialsproject.org/phasediagram
 
 <p align="center">
 <img src="https://19640810.xyz/05_image/01_imageHost/20240426-202833.png" alt="Image Description" width="500">
 </p>
 
-- MP教程：https://github.com/Yiwei666/01_python_script/wiki/07_Materials-project
-- 相图网址：https://next-gen.materialsproject.org/phasediagram
-
 2. 确定均相或两相体系的组分以及摩尔数。如果已知体系中各组元的质量百分数，可以使用`49_[扩展Beta]单质或化合物或多相混合体系密度计算.py`脚本功能 05 计算各组元的摩尔数。
 
 3. 向 `49_[扩展-1化合物原子组成数据库]单质或化合物或多相混合体系密度计算.json` 数据库中添加稳定氧化物的组成，例如 PtO2
+   - 利用 Factsage 的`View Data模块`查找各氧化物组元的密度，并写入到 `49_[扩展-2化合物密度数据库]单质或化合物或多相混合体系密度计算.json` 数据库中。
+   - 对于文献中或者factsage的`View Data模块`缺失的化合物密度，例如 `PtO2`，可以尝试使用`Reaction模块`计算体积数据进行倒推（`View Data`模块缺密度的化合物似乎无法用于`Reaction模块`多元体系的体积和密度计算）。
+   - 注意：`Materials project`上提供每种晶体结构的密度数据（`Density column`，按照 `Energy above hull` 从小到大排列）。
 
-4. 利用 Factsage 的`View Data模块`查找各氧化物组元的密度，并写入到 `49_[扩展-2化合物密度数据库]单质或化合物或多相混合体系密度计算.json` 数据库中。
+4. 使用脚本 `49_[扩展Beta]单质或化合物或多相混合体系密度计算.py` 功能 06 获取体系密度，同步获得体系中各类原子的数量以及总数，便于 Materials Studio 建模。
 
-5. 对于文献中或者factsage的`View Data模块`缺失的化合物密度，例如 `PtO2`，可以尝试使用`Reaction模块`计算体积数据进行倒推（`View Data`模块缺密度的化合物似乎无法用于`Reaction模块`多元体系的体积和密度计算）。
+5.  Materials Studio 建模，注意将建模的盒子边长等信息粘贴到ppt中，后期需要添加到`.xyz`文件中
 
-6. 注意：`Materials project`上提供每种晶体结构的密度数据（`Density column`，按照 `Energy above hull` 从小到大排列）。
-
-7. 使用脚本 `49_[扩展Beta]单质或化合物或多相混合体系密度计算.py` 功能 06 获取体系密度，同步获得体系中各类原子的数量以及总数，便于 Materials Studio 建模。
-
-8.  Materials Studio 建模，注意将建模的盒子边长等信息粘贴到ppt中，后期需要添加到`.xyz`文件中
-
-9. 编写 cp2k inp控制文件，进行分子动力学模拟。
+6. 编写 cp2k inp控制文件，进行分子动力学模拟。
 
 
 
