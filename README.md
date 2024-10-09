@@ -424,8 +424,9 @@ a_str, b_str = input_str.split(",")  # 拆分输入的字符串
 a = float(a_str)  # 转换为浮点数
 b = float(b_str)  # 转换为浮点数
 
-# 设置参数k
-k = 0.6
+# 提示用户输入碱度C/S参数k
+k_str = input("请输入碱度C/S参数k：")
+k = float(k_str)  # 转换为浮点数
 
 # 计算SiO2的质量分数y
 y = (100 - a - b) / (k + 1)
