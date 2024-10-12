@@ -9,6 +9,7 @@
 02_基于ISAACS配位原子数百分比提取.py
 03_B-O配位数同时为3和4的聚合度分析.py
 04_含Al掺杂的B最近邻和次近邻聚合度分析.py
+05_将空格分隔的列数据保存到excel文件.py
 ```
 
 
@@ -153,9 +154,21 @@ N(tot)   N(Si)   N(B )   N(Ca)   N(O )          Number   or     Percent
 ```
 
 
+### 5. `05_将空格分隔的列数据保存到excel文件.py`
 
+- 功能：读取脚本所在目录下的 `B_isaacs.txt` 数据文件，忽略前三行，剩下的数据包含若干列，列和列之间使用空格分隔，将剩余数据写入到 `B_isaacs.xlsx` 数据文件中，使得txt文件中的每列数据在xlsx文件中也为1列。
 
+```py
+import pandas as pd
 
+# 读取B_isaacs.txt文件，跳过前3行，并指定空格作为分隔符
+df = pd.read_csv('B_isaacs.txt', sep='\s+', skiprows=3, header=None)
+
+# 将数据写入B_isaacs.xlsx文件
+df.to_excel('B_isaacs.xlsx', index=False, header=False)
+
+print("数据已成功写入B_isaacs.xlsx文件。")
+```
 
 
 
