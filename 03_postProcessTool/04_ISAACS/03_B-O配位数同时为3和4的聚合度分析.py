@@ -127,3 +127,13 @@ print(f"x5: {x5}, x6: {x6}")
 y5 = b3[5].sum()
 y6 = b3[7].sum()
 print(f"y5: {y5}, y6: {y6}")
+
+# 按照az1列递增顺序打印a3数据集
+a3_sorted = a3.sort_values(by='az1')
+print("a3 data (sorted by az1):")
+print(a3_sorted)
+
+# 按照bz1列递增顺序打印b3数据集
+b3_sorted = b3.sort_values(by='bz1')
+print("b3 data (sorted by bz1):")
+print(b3_sorted)
