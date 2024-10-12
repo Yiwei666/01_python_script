@@ -153,6 +153,62 @@ N(tot)   N(Si)   N(B )   N(Ca)   N(O )          Number   or     Percent
 然后分别计算数据集b3第col6列数据的和y5和第col8列数据的和y6（浮点数计算），打印出来。
 ```
 
+2. 体系中不含Al体系（CaO-SiO2-B2O3）
+
+```
+Environments for B  atoms:
+
+N(tot)   N(Si)   N(B )   N(Ca)   N(O )          Number   or     Percent
+  8        4       0       0       4          35.05000   or      19.691 %
+  8        3       1       0       4           2.05000   or       1.152 %
+  7        4       0       0       3           5.20000   or       2.921 %
+  6        3       0       0       3          29.71000   or      16.691 %
+```
+
+- 环境变量
+
+```py
+# 定义变量，将列数转换为索引
+# Number，B原子数所在列，该列求和为体系所有B原子数
+col6 = 6 - 1                
+# Percent，百分比所在列
+col8 = 8 - 1
+# N(O )，O原子配位数所在列
+col5 = 5 - 1
+# N(Si)   N(B ) 等所在列，修改列表 [2, 3]
+colist = [c - 1 for c in [2, 3]]  # 列数转为索引
+```
+
+
+
+3. 体系中含Al体系（CaO-SiO2-Al2O3-B2O3）
+
+```
+Environments for B  atoms:
+
+N(tot)   N(Si)   N(Al)   N(B )   N(Ca)   N(O )          Number   or     Percent
+  6        3       0       0       0       3           8.88000   or       9.867 %
+  6        0       1       1       0       4           0.01000   or       0.011 %
+  5        2       0       0       0       3          14.99000   or      16.656 %
+  7        3       0       0       0       4          10.28000   or      11.422 %
+  8        4       0       0       0       4          10.60000   or      11.778 %
+```
+
+- 环境变量
+
+```py
+# 定义变量，将列数转换为索引
+# Number，B原子数所在列，该列求和为体系所有B原子数
+col6 = 7 - 1                
+# Percent，百分比所在列
+col8 = 9 - 1
+# N(O )，O原子配位数所在列
+col5 = 6 - 1
+# N(Si)   N(B ) 等所在列，修改列表 [2, 3]
+colist = [c - 1 for c in [2, 3, 4]]  # 列数转为索引
+```
+
+
 
 ### 5. `05_将空格分隔的列数据保存到excel文件.py`
 
