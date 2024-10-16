@@ -185,7 +185,7 @@ col5 = 5 - 1
 colist = [c - 1 for c in [2, 3]]  # 列数转为索引
 ```
 
-
+需要修改的环境变量包括 `Number Percent O` 以及 `Si B` 所在的列数
 
 3. 体系中含Al体系（CaO-SiO2-Al2O3-B2O3）
 
@@ -214,6 +214,7 @@ col5 = 6 - 1
 colist = [c - 1 for c in [2, 3, 4]]  # 列数转为索引
 ```
 
+需要修改的环境变量包括 `Number Percent O` 以及 `Si Al B` 所在的列数
 
 
 ### 5. `05_将空格分隔的列数据保存到excel文件.py`
