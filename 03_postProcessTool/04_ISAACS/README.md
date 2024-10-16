@@ -123,7 +123,7 @@ N(tot)   N(Si)   N(B )   N(Ca)   N(O )          Number   or     Percent
 ```
 
 
-### `04_含Al掺杂的B最近邻和次近邻聚合度分析.py`
+### 4. `04_含Al掺杂的B最近邻和次近邻聚合度分析.py`
 
 1. 总体思路
 
