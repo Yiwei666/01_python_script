@@ -32,6 +32,19 @@ piecewiseCalc.py                                  # 函数模块，仅包含函�
 ```
 
 
+- Pd-O 原子对配位数随模拟时间的变化曲线
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20241021-152518.png" alt="Image Description" width="450">
+</p>
+
+- Pd-Si 原子对配位数随模拟时间的变化曲线
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20241021-152552.png" alt="Image Description" width="450">
+</p>
+
+
 
 
 
