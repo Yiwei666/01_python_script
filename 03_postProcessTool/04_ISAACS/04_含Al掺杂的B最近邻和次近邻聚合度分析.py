@@ -1,14 +1,17 @@
 import pandas as pd
 
+# 定义cluster字典，键为元素符号，值为对应的列数（列数等于列的索引+1）
+cluster = {"Si": 2, "Al": 3, "B": 4, "O": 6}
+
 # 定义变量，将列数转换为索引
 # Number，B原子数所在列，该列求和为体系所有B原子数
-col6 = 6 - 1                
+col6 = 7 - 1                
 # Percent，百分比所在列
-col8 = 8 - 1
+col8 = 9 - 1
 # N(O )，O原子配位数所在列
-col5 = 5 - 1
+col5 = 6 - 1
 # N(Si)   N(B ) 等所在列，修改列表 [2, 3]
-colist = [c - 1 for c in [2, 3]]  # 列数转为索引
+colist = [c - 1 for c in [2, 3, 4]]  # 列数转为索引
 
 # 读取脚本所在目录下的B_isaacs.txt数据文件，忽略前3行
 data = pd.read_csv('B_isaacs.txt', sep='\s+', skiprows=3, header=None)
@@ -119,14 +122,24 @@ print(f"sum of percentages: {sum([bs_/(x3+y3)*100 for bs_ in bs_list]):.2f}%")
 a3 = a2.copy()
 a3[col6] = (a3[col6] / k0).round(3)
 a3[col8] = (a3[col8] / k0).round(3)
-print("a3 data (sorted by az1):")
-print(a3.sort_values(by='az1'))
+
+# 在a3中新增一列显示cluster字典元素符号和对应列的数值组合，忽略值为0的元素
+a3['cluster_combo'] = a3.apply(lambda row: ''.join([f"{key}{int(row[val-1])}" for key, val in cluster.items() if int(row[val-1]) != 0]), axis=1)
+
+# a3数据集按az1升序、col8降序排序
+print("a3 data (sorted by az1 ascending and col8 descending with cluster_combo):")
+print(a3.sort_values(by=['az1', col8], ascending=[True, False]))
 
 b3 = b2.copy()
 b3[col6] = (b3[col6] / k0).round(3)
 b3[col8] = (b3[col8] / k0).round(3)
-print("b3 data (sorted by bz1):")
-print(b3.sort_values(by='bz1'))
+
+# 在b3中新增一列显示cluster字典元素符号和对应列的数值组合，忽略值为0的元素
+b3['cluster_combo'] = b3.apply(lambda row: ''.join([f"{key}{int(row[val-1])}" for key, val in cluster.items() if int(row[val-1]) != 0]), axis=1)
+
+# b3数据集按bz1升序、col8降序排序
+print("b3 data (sorted by bz1 ascending and col8 descending with cluster_combo):")
+print(b3.sort_values(by=['bz1', col8], ascending=[True, False]))
 
 # 分别计算a3第col6列的和x5和第col8列的和x6，打印出来
 x5 = a3[col6].sum()
