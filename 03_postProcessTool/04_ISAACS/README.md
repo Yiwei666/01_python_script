@@ -203,6 +203,9 @@ N(tot)   N(Si)   N(Al)   N(B )   N(Ca)   N(O )          Number   or     Percent
 - 环境变量
 
 ```py
+# 定义cluster字典，键为元素符号，值为对应的列数（列数等于列的索引+1）
+cluster = {"Si": 2, "Al": 3, "B": 4, "O": 6}
+
 # 定义变量，将列数转换为索引
 # Number，B原子数所在列，该列求和为体系所有B原子数
 col6 = 7 - 1                
@@ -214,7 +217,7 @@ col5 = 6 - 1
 colist = [c - 1 for c in [2, 3, 4]]  # 列数转为索引
 ```
 
-需要修改的环境变量包括 `Number Percent O` 以及 `Si Al B` 所在的列数
+需要修改的环境变量包括 `Number, Percent, O` 以及 `Si, Al, B` 所在的列数
 
 
 ### 5. `05_将空格分隔的列数据保存到excel文件.py`
