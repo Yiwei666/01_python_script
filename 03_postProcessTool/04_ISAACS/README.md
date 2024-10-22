@@ -174,6 +174,9 @@ N(tot)   N(Si)   N(B )   N(Ca)   N(O )          Number   or     Percent
 - 环境变量
 
 ```py
+# 定义cluster字典，键为元素符号，值为对应的列数（列数等于列的索引+1）
+cluster = {"Si": 2, "B": 3, "O": 5}
+
 # 定义变量，将列数转换为索引
 # Number，B原子数所在列，该列求和为体系所有B原子数
 col6 = 6 - 1                
