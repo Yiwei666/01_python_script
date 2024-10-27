@@ -1044,6 +1044,125 @@ class Xyz():
         print("截断半径字典", cutoffDict)
         
         
+    # 19方法：提取某一帧某些编号的原子坐标，生成特定局域结构或团簇的原子坐标xyz文件，不依赖于其他方法，不定义新的全局变量，基于self.xyzDict来实现
+    # 不需要考虑周期性问题，因为使用的xyz文件是方法18等输出的局域结构xyz文件，已经考虑过周期性变换了，局域结构在可视化时都是完整的。
+    # 不同帧的原子数往往不同，不需要考虑盒子边长等参数
+    def clusterExtract(self, frames, atomNumberRange):
+        '''
+        self.xyzDict
+        {
+            0: 3, 
+            1: {0: 2, 1: ['Si', '0', '0', '0'], 2: ['Ca', '1', '1', '1']}, 
+            2: {0: 2, 1: ['Si', '2', '2', '2'], 2: ['Ti', '3', '3', '3']}, 
+            3: {0: 3, 1: ['H', '3.1', '2.2', '1'], 2: ['B', '4.1', '2.5', '6.6'], 3: ['P', '1.1', '2.2', '3.3']}
+        }
+        '''
+        self.frames = frames
+        self.atomNumberRange = atomNumberRange
+        atomNumber = len(self.atomNumberRange)
+        totalExtractList = []
+        totalExtractList.append(str(atomNumber)+'\n')  # 对应原子数行
+        totalExtractList.append('\n')                  # 对应晶格参数行，即空行
+        i = self.frames                                # 指定帧数
+        for l in self.atomNumberRange:                 # self.atomNumberRange是传入的目标原子编号列表，即计算这些原子截断半径范围内的配位原子
+            lName = self.xyzDict[i][l][0]
+            lx = float(self.xyzDict[i][l][1])
+            ly = float(self.xyzDict[i][l][2])
+            lz = float(self.xyzDict[i][l][3])
+            totalExtractList.append(lName+' '+str(lx)+' '+str(ly)+' '+str(lz)+'\n')
+        with open(self.saveFile,'w') as new_file:               # 将提取出来的每一帧原子坐标写入到文件中
+            for i,j in enumerate(totalExtractList):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
+                new_file.write(j)      
+        print("团簇结构输出文件已保存！") 
+
+
+
+    # 20方法：提取各帧原子数不同的多帧xyz轨迹文件中的局域结构，基于不同原子对的阶段半径，不考虑周期性
+    # 相比于18方法，方法20适用于每帧中原子数不同、中心原子编号不固定的情况
+    def multiFrameClusterExtract(self,result,centerAtomKindList):
+        '''
+        该方法基于初始定义的 self.xyzDict 全局变量来计算。未使用 方法 7 引入的 self.xyzSuperDict 全局变量
+        该方法未定义其他新的全局变量
+        
+        self.xyzDict
+        {
+            0: 3, 
+            1: {0: 2, 1: ['Si', '0', '0', '0'], 2: ['Ca', '1', '1', '1']}, 
+            2: {0: 2, 1: ['Si', '2', '2', '2'], 2: ['Ti', '3', '3', '3']}, 
+            3: {0: 3, 1: ['H', '3.1', '2.2', '1'], 2: ['B', '4.1', '2.5', '6.6'], 3: ['P', '1.1', '2.2', '3.3']}
+        }
+        
+        # self.xyzDict[2][15] = ['Si', '15.896150', '10.830315', '16.041859']
+        # self.xyzSuperDict[2][400] = ['Si', 32.34385, 10.830315, -0.40584100000000234, [1, 0, -1], 15, ['Si', '15.896150', '10.830315', '16.041859']]         
+        # self.xyzSuperDict 中对应的信息依次为 扩增后原子坐标，括增用倍数列表，        
+        '''
+        self.result = result   # result = [['Si', 'Si', 'Si'], ['0', 'Si', 'Ca'], [2.5, 3.0, 5.0]]  分别是中心原子，配位原子和截断半径
+        self.centerAtomKindList = centerAtomKindList        # centerAtomKindList = ["B", "Si", "Al"]   中心原子种类，用于提取每一帧中对应的原子编号
+        maxCutoff = max( self.result[2] )                   # 获取最大的截断半径
+        cutoffDict = {}                                     # 初始化一个截断半径字典
+        for i,m in enumerate(self.result[0]):
+            n = self.result[1][i]
+            v = self.result[2][i]
+            cutoffDict[m+"-"+n] = v                             # 截断半径字典，键是 中心原子-配位原子 原子对，值是对应截断半径
+                       
+        # self.periodicBox("1 -1 1 -1 1 -1","F")         # 需要调用07方法，因此要进行初始化，初始化时要进行一些默认参数的设置，第一个参数代表扩增的倍数
+        # print(type(self.xyzSuperDict[0]),type(self.xyzSuperDict[1][0]),self.xyzSuperDict[1][0])   # 测试用的print
+        # print(self.xyzSuperDict[1][1],type(self.xyzSuperDict[1][1][1]))                           # 测试用的print
+        finalExtractList = []                          # 构建一个列表，用于储存每一帧中满足截断半径要求的原子轨迹信息
+        for i in range(1,self.xyzDict[0] +1):          # 帧数循环
+            # print(self.xyzSuperDict[0])
+            # print(self.xyzSuperDict[i][0])
+            atomNumberRange = []                       # 初始化一个列表，添加每一帧中心原子编号，每一帧中的中心原子编号都不同，都在动态变化
+            for x in range(1,self.xyzDict[i][0]+1):    # 每一帧中的原子循环，self.xyzDict[i][0]代表盒子轨迹第i帧的原子数
+                if self.xyzDict[i][x][0] in self.centerAtomKindList:      # 判断第i帧中的第x个原子是否是中心原子
+                    atomNumberRange.append(x)          # 获取第i帧中所有中心原子的编号
+            print(f"第 {i} 帧中心原子的编号分别为：{atomNumberRange}")
+            iExtract = 0                               # 该参数用于计数，即每一帧中在截断半径内的原子数量
+            newExtractList = []                        # 该列表用于储存每一帧中满足截断半径要求的原子信息，该列表每一帧要重新释放置零并重新赋值
+            totalExtractList = []
+            for j in range(1,self.xyzDict[i][0]+1):    # 每一帧中的原子循环，self.xyzDict[i][0]代表盒子轨迹第i帧的原子数
+                eName = self.xyzDict[i][j][0]          # 计算第i帧中第j个原子的元素符号和各分坐标
+                ex = float(self.xyzDict[i][j][1])      # 针对每一帧，分别将每个原子与传入的目标原子的距离进行比较
+                ey = float(self.xyzDict[i][j][2])
+                ez = float(self.xyzDict[i][j][3])
+                if eName in self.centerAtomKindList:       # 判断j原子是否是中心原子，self.centerAtomKindList中的原子最终一定会被提取的
+                    iExtract = iExtract +1                 # 对满足截断半径的原子进行计数
+                    newExtractList.append(eName+' '+str(ex)+' '+str(ey)+' '+str(ez)+'\n')     # 将满足要求的原子信息添加到列表中
+                    continue                               # 当编号的中心原子l和比较的j原子是同一原子时，跳出本次循环
+                if eName not in self.result[1]:            # 判断j原子是否是配位原子，如果不是，跳出循环
+                    continue
+                # 1. 基于上述判断后，j原子一定不是中心原子，也排除了不是配位原子的可能性，但不排斥中心原子和配位原子是同类原子的可能性
+                # 2. 由于j原子是配位原子，下面主要根据 l-j 原子对距离进行筛选和算法优化
+                for l in atomNumberRange:                  # self.atomNumberRange是传入的目标原子编号列表，即计算这些原子截断半径范围内的配位原子
+                    lName = self.xyzDict[i][l][0]
+                    lx = float(self.xyzDict[i][l][1])
+                    ly = float(self.xyzDict[i][l][2])
+                    lz = float(self.xyzDict[i][l][3])
+                    tdx = abs(lx - ex)                          # 计算 j-l原子对 x 分坐标的插值
+                    tdy = abs(ly - ey)
+                    tdz = abs(lz - ez) 
+                    distance = math.sqrt( tdx**2 + tdy**2 + tdz**2 )     # 计算两个原子间的距离
+                    if distance > maxCutoff:                             # 如果j-l原子对距离大于最大的截断半径，则跳出循环
+                        continue
+                    if distance <= cutoffDict[lName+"-"+eName]:          # 判断 l-j 原子对距离是否小于相应截断半径
+                        coordinationAtom = eName+' '+str(ex)+' '+str(ey)+' '+str(ez)
+                        if coordinationAtom + '\n' not in newExtractList:      # 避免重复写入相同的配位原子坐标信息，当某一个配位原子与某两个非常靠近的中心原子满足配位要求时，很可能会重复写入配位原子信息
+                            iExtract = iExtract +1                             # 对满足截断半径的原子进行计数
+                            newExtractList.append( coordinationAtom +'\n')     # 将满足要求的原子信息添加到列表中
+                        else:                                                  # 若已写入该配位原子信息，则跳过该中心原子。
+                            continue
+                        # break                                            # 跳出内层的for循环，避免可能出现同个原子重复写入
+            totalExtractList.append(str(iExtract)+'\n')         # 每一帧的第一行添加原子数，每一帧循环结束后添加原子数
+            totalExtractList.append(self.replace+'\n')          # 每一帧的第二行添加晶格信息参数，每一帧循环结束后添加晶格信息
+            finalExtractList = finalExtractList + totalExtractList + newExtractList               # 构建一个集成列表，将每一帧的信息都储存在该列表中
+        # for i in finalExtractList:
+        #     print(i)  
+        with open(self.saveFile,'w') as new_file:               # 将提取出来的每一帧原子坐标写入到文件中
+            for i,j in enumerate(finalExtractList):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
+                new_file.write(j)      
+        print("目标原子局域结构输出文件已保存！") 
+        print("截断半径字典", cutoffDict)     
+
 
     # 09方法：计算总的径向分布函数
     def trdfCalc(self,dotNumber,frameFromTo,atomicPair):     # dotNumber是取点数,是一个整数值，frameFromTo是一个帧数范围，如350-500, atomicPair是原子对
@@ -1242,7 +1361,7 @@ class Xyz():
         with open(self.saveFile,'w') as new_file:            # 'w'参数将覆盖之前的同名文件
             for i,j in enumerate(self.frameRange):
                 for singleLine in self.allFrameDict[j][2]:   # 访问allFrameDict字典中对应帧数的元素列表，字典中帧数是从1开始的
-                    new_file.write(singleLine)               # 将列表中的每一行写入到新的文件中
+                    new_file.write(singleLine+"\n")               # 将列表中的每一行写入到新的文件中
 
 
     # 06方法：提取特定编号原子周围半径r范围内原子，该方法未考虑周期性
@@ -1651,6 +1770,8 @@ if __name__ == '__main__':
       16: 基于分段函数和不同原子对的截断半径Rij，计算多帧xyz文件特定编号原子的配位数[考虑周期性]，基于功能 15 改编
       17: 基于不同原子对的截断半径Rij，提取多帧xyz文件特定编号原子周围半径Rij范围内的配位原子[考虑周期性]，基于功能 14 算法优化，适用于大体系快速计算，不显示盒子外配位补齐原子
       18: 基于不同原子对的截断半径Rij，提取多帧xyz文件特定编号原子周围半径Rij范围内的配位原子[考虑周期性]，基于功能 17 算法优化，适用于大体系快速计算，显示盒子外配位补齐原子
+      19: 提取某一帧某些编号的原子坐标，生成特定局域结构或团簇的原子坐标xyz文件
+      20: 基于不同原子对的截断半径Rij，针对各帧原子数不同的多帧xyz文件，提取某些类型中心原子的配位原子，基于方法18升级，不考虑周期性，适用于团簇结构的精细提取
       
       -1: 测试
            
@@ -1715,10 +1836,10 @@ if __name__ == '__main__':
     
     elif defChoose == "04":
         cellInfo = "16.4477 16.4477 16.4477"                                    # 该参数为类默认值，对该方法无意义
-        print("请为提取帧数组成的新xyz文件命名，输入Enter默认为 02_trajExtra_python47.xyz")                        # 提示命令行输入
+        print("请为提取帧数组成的新xyz文件命名，输入Enter默认为 04_trajFrameExtra.xyz")                        # 提示命令行输入
         cellName = input()                                                      # 注意字符串输入变量的数据类型转换
         if cellName == '' :
-            cellName = "02_trajExtra_python47.xyz"                                   # 设置输入Enter时默认的输出文件名
+            cellName = "04_trajFrameExtra.xyz"                                   # 设置输入Enter时默认的输出文件名
         xyzFile1 = Xyz(inputFunction(),cellInfo,cellName)                       # 对类进行实例化
         # def __init__(self,name,replace,saveFile):
         print("请输入想要提取的帧数范围，如 1,3,5-10,30，帧数从1开始，用英文逗号隔开")
@@ -1731,10 +1852,10 @@ if __name__ == '__main__':
         # class txtPlot():
         # def __init__(self,fileName,nStart,saveTxt,separator):
         nStart = 2        # 数据起始行的行数，一般从第2行开始
-        print("请为绘图数据的txt文件命名，输入Enter默认为 03_dataPlot_python47.txt")                        # 提示命令行输入
+        print("请为绘图数据的txt文件命名，输入Enter默认为 05_dataPlot_python47.txt")                        # 提示命令行输入
         saveTxt = input()                                                       # 注意字符串输入变量的数据类型转换
         if saveTxt == '' :
-            saveTxt = "03_dataPlot_python47.txt"     
+            saveTxt = "05_dataPlot_python47.txt"     
         xyzFile1 = txtPlot(inputFunction(),nStart,saveTxt)
         xyzFile1.tempPot()
 
@@ -2206,6 +2327,105 @@ if __name__ == '__main__':
         xyzFile1.fullLocalStructureExtract(result,atomNumberRange)   # 注意此处的result是一个列表，atomNumberRange是一个类似于[5, 6, 7, 8, 9, 10]的数字列表
 
 
+    elif defChoose == "19":
+        print("请输出需要添加的晶格信息，输入Enter默认为 16.4477 16.4477 16.4477 ,采用空格分隔")     # 提示命令行输入
+        cellInfo = input()                                                      # 注意字符串输入变量的数据类型转换
+        if cellInfo == '' :
+            cellInfo = "16.4477 16.4477 16.4477"                                # 设置输入Enter时候的晶格常数默认值
+            print("采用默认 16.4477 16.4477 16.4477")
+
+        print("请为提取后的xyz文件重新命名，输入Enter默认为 19_cluster.xyz")                        # 提示命令行输入
+        cellName = input()                                                      # 注意字符串输入变量的数据类型转换
+        if cellName == '' :
+            cellName = "19_cluster.xyz"                                         # 设置输入Enter时默认的输出文件名
+            print("采用默认 19_cluster.xyz ")    
+        print("输入文件务必是满足指定原子对截断半径提取后的xyz轨迹文件，通常为方法18输出的文件")
+        xyzFile1 = Xyz(inputFunction(),cellInfo,cellName)                       # 对类进行实例化  
+        
+        def get_frame_count():
+            # 提示用户输入帧数
+            user_input = input("请输入想要计算的帧数，按 Enter 键默认为 1: ")
+            
+            # 如果用户直接按 Enter，默认为 1
+            if user_input.strip() == "":
+                frame_count = 1
+            else:
+                try:
+                    # 尝试将输入转换为整数
+                    frame_count = int(user_input)
+                except ValueError:
+                    # 输入无效时给出提示并默认为 1
+                    print("无效输入，使用默认值 1.")
+                    frame_count = 1
+            
+            return frame_count
+        
+        # 调用函数并输出结果
+        frames = get_frame_count()
+        print(f"你输入的帧数为: {frames}")
+        xyzFile1.atomIndexCalc(frames)                                               # 调用03方法计算第frames帧中的原子序号分布，帧数从1开始计数
+        print("上述为调用03方法计算第", frames,"帧中原子序号分布")
+        print("请输入想要提取的原子编号范围，如 1,2,217-224,300 ，原子编号从1开始，用英文逗号隔开")
+        # inputSplit("1,3,5-10,55-58")
+        atomNumberRange = inputSplit(input())   # input()函数返回的是一个字符串，调用 inputSplit()函数
+        xyzFile1.clusterExtract(frames, atomNumberRange)   # 注意此处的result是一个列表，atomNumberRange是一个类似于[5, 6, 7, 8, 9, 10]的数字列表
+
+
+    elif defChoose == "20":
+        # print("请输出需要添加的晶格信息，输入Enter默认为 100 100 100 ,采用空格分隔，盒子边长要足够大，盒子边长的一半要大于dx、dy和dz")     # 提示命令行输入
+        # cellInfo = input()                                                    # 注意字符串输入变量的数据类型转换
+        cellInfo = "100 100 100"                                                # 默认采用的晶格参数，由于本方法不需要考虑周期性，因此并未有效使用该参数，故可以随意设置
+        print("请为提取后的xyz文件重新命名，输入Enter默认为 20_atomsExtract.xyz")                        # 提示命令行输入
+        cellName = input()                                                      # 注意字符串输入变量的数据类型转换
+        if cellName == '' :
+            cellName = "20_atomsExtract.xyz"                                    # 设置输入Enter时默认的输出文件名
+            print("采用默认 20_atomsExtract.xyz ")    
+        xyzFile1 = Xyz(inputFunction(),cellInfo,cellName)                       # 对类进行实例化        
+        xyzFile1.atomIndexCalc(1)                                               # 调用03方法计算第1帧中的原子序号分布，此处atomIndexCalc方法中的frameNo参数为1
+        print("上述为调用03方法计算第1帧中原子序号分布，接下来为08方法")
+        print("请设置不同原子对的截断半径，中心原子和配位原子可以是同种原子，如 B-B：")                           # 提示命令行输入
+        # 从用户输入的字符串中提取周期性结构的化学符号和数字，将它们分别存储在不同的列表中，并将这三个列表组合成一个列表。
+        input_str = input("请按中心原子、配位原子、截断半径的顺序输入字符串（以空格分隔，符号和数字总数必须是3的整数倍），如 Si O 2.5 Si Si 3.0 Si Ca 5.0 "+"\n")
+        # 检查输入字符串的符号和数字总数是否是3的整数倍
+        tokens = input_str.split()
+        if len(tokens) % 3 != 0:
+            print("输入格式错误！符号和数字总数必须是3的整数倍。")
+        else:
+            symbols_1 = []
+            symbols_2 = []
+            numbers = []
+        
+            for i in range(0, len(tokens), 3):
+                symbols_1.append(tokens[i])
+                symbols_2.append(tokens[i+1])
+                numbers.append(float(tokens[i+2]))
+        
+            result = [symbols_1, symbols_2, numbers]   # [['Si', 'Si', 'Si'], ['0', 'Si', 'Ca'], [2.5, 3.0, 5.0]]
+            
+            # 打印 symbols_1 中的字符串种类数
+            unique_symbols_1 = set(symbols_1)
+            num_unique_symbols_1 = len(unique_symbols_1)
+            print("中心原子种类数：", num_unique_symbols_1)
+            # 检查 symbols_2 中是否有重复的字符串
+            if len(symbols_2) != len(set(symbols_2)):
+                print("配原子种类有重复！配位原子重复时，中心原子不能重复。")
+                print("中心原子、配位原子和截断半径：",result)
+                # sys.exit(1)                            # 终止程序，返回退出码 1
+            else:
+                print("中心原子、配位原子和截断半径：",result)
+
+        print("请输入想要提取的中心原子种类，如 Si Al B，不能有重复，不要填写体系中不存在的中心原子")
+        centerAtomKindList = (input()).split()           # input()函数返回的是一个字符串
+        def check_for_duplicates(centerAtomKindList):
+            if len(centerAtomKindList) != len(set(centerAtomKindList)):
+                print("警告：列表中有重复元素，程序结束运行。")
+                sys.exit(1)  # 结束运行
+            else:
+                print("列表中没有重复元素，程序继续运行。")
+        check_for_duplicates(centerAtomKindList)                        # 检查列表是否有重复元素
+        xyzFile1.multiFrameClusterExtract(result, centerAtomKindList)   # 注意此处的result是一个列表
+        
+        
     else:
         print("提示：您选择的功能正在开发，请重新选择！")
 
