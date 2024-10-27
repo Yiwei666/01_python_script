@@ -86,6 +86,8 @@ Mg         0.3604        1.99    2.82
       16: 基于分段函数和不同原子对的截断半径Rij，计算多帧xyz文件特定编号原子的配位数[考虑周期性]，基于功能 15 改编
       17: 基于不同原子对的截断半径Rij，提取多帧xyz文件特定编号原子周围半径Rij范围内的配位原子[考虑周期性]，基于功能 14 算法优化，适用于大体系快速计算，不显示盒子外配位补齐原子
       18: 基于不同原子对的截断半径Rij，提取多帧xyz文件特定编号原子周围半径Rij范围内的配位原子[考虑周期性]，基于功能 17 算法优化，适用于大体系快速计算，显示盒子外配位补齐原子
+      19: 提取某一帧某些编号的原子坐标，生成特定局域结构或团簇的原子坐标xyz文件
+      20: 基于不同原子对的截断半径Rij，针对各帧原子数不同的多帧xyz文件，提取某些类型中心原子的配位原子，基于方法18升级，不考虑周期性，适用于团簇结构的精细提取
 
       -1: 测试
       
@@ -125,136 +127,15 @@ Mg         0.3604        1.99    2.82
 </p>
 
 
-3. 方法18核心代码
-
-```py
-    # 18 方法：提取特定编号原子周围半径r范围内原子，该方法考虑了周期性，针对大体系优化了算法，减少计算时间。相比于方法 14，未使用方法 7 的全局变量。相比于方法17，对于盒子边界附近满足要求的配位原子，完整显示
-    # 相比于17方法，优点在于能够补全所有靠近边界处的局域结构中缺失的配位原子。
-    def fullLocalStructureExtract(self,result,atomNumberRange):
-        '''
-        该方法基于初始定义的 self.xyzDict 全局变量来计算。未使用 方法 7 引入的 self.xyzSuperDict 全局变量
-        该方法未定义其他新的全局变量
-        
-        self.xyzDict
-        {
-            0: 3, 
-            1: {0: 2, 1: ['Si', '0', '0', '0'], 2: ['Ca', '1', '1', '1']}, 
-            2: {0: 2, 1: ['Si', '2', '2', '2'], 2: ['Ti', '3', '3', '3']}, 
-            3: {0: 3, 1: ['H', '3.1', '2.2', '1'], 2: ['B', '4.1', '2.5', '6.6'], 3: ['P', '1.1', '2.2', '3.3']}
-        }
-        
-        # self.xyzDict[2][15] = ['Si', '15.896150', '10.830315', '16.041859']
-        # self.xyzSuperDict[2][400] = ['Si', 32.34385, 10.830315, -0.40584100000000234, [1, 0, -1], 15, ['Si', '15.896150', '10.830315', '16.041859']]         
-        # self.xyzSuperDict 中对应的信息依次为 扩增后原子坐标，括增用倍数列表，        
-        '''
-        self.result = result   # result = [['Si', 'Si', 'Si'], ['0', 'Si', 'Ca'], [2.5, 3.0, 5.0]]  分别是中心原子，配位原子和截断半径
-        self.atomNumberRange = atomNumberRange
-        maxCutoff = max( self.result[2] )                   # 获取最大的截断半径
-        cutoffDict = {}                                     # 初始化一个截断半径字典
-        for i,m in enumerate(self.result[0]):
-            n = self.result[1][i]
-            v = self.result[2][i]
-            cutoffDict[m+"-"+n] = v                             # 截断半径字典，键是 中心原子-配位原子 原子对，值是对应截断半径
-                
-        # 1. 核验输入的中心原子编号及种类，与输入截断半径原子对中的中心原子是否一致
-        for k in self.atomNumberRange:                      # self.atomNumberRange是传入的目标原子编号列表，即计算这些原子截断半径范围内的配位原子
-            centerName = self.xyzDict[1][k][0]              # 基于编号，获取第1帧中所有中心原子的元素符号，假设所有帧中原子序号分布相同
-            if centerName not in self.result[0]:            # 如果编号对应的中心原子与原子对中的中心原子种类不符合，则中断。
-                print("设置原子对截断半径的中心原子种类 与 输入原子编号对应的中心原子种类不符")
-                print("报错的原子编号以及原子种类为：", k, centerName)
-                sys.exit(1)                                 # 终止程序，返回退出码 1
-        
-        # self.periodicBox("1 -1 1 -1 1 -1","F")         # 需要调用07方法，因此要进行初始化，初始化时要进行一些默认参数的设置，第一个参数代表扩增的倍数
-        # print(type(self.xyzSuperDict[0]),type(self.xyzSuperDict[1][0]),self.xyzSuperDict[1][0])   # 测试用的print
-        # print(self.xyzSuperDict[1][1],type(self.xyzSuperDict[1][1][1]))                           # 测试用的print
-        finalExtractList = []                          # 构建一个列表，用于储存每一帧中满足截断半径要求的原子轨迹信息
-        for i in range(1,self.xyzDict[0] +1):          # 帧数循环
-            # print(self.xyzSuperDict[0])
-            # print(self.xyzSuperDict[i][0])
-            iExtract = 0                               # 该参数用于计数，即每一帧中在截断半径内的原子数量
-            newExtractList = []                        # 该列表用于储存每一帧中满足截断半径要求的原子信息，该列表每一帧要重新释放置零并重新赋值
-            totalExtractList = []
-            for j in range(1,self.xyzDict[i][0]+1):    # 每一帧中的原子循环，self.xyzDict[i][0]代表盒子轨迹第i帧的原子数
-                eName = self.xyzDict[i][j][0]          # 计算第i帧中第j个原子的元素符号和各分坐标
-                ex = float(self.xyzDict[i][j][1])      # 针对每一帧，分别将每个原子与传入的目标原子的距离进行比较
-                ey = float(self.xyzDict[i][j][2])
-                ez = float(self.xyzDict[i][j][3])
-            
-                if j in self.atomNumberRange:              # 判断j原子是否是中心原子，self.atomNumberRange中的原子最终一定会被提取的
-                    iExtract = iExtract +1                 # 对满足截断半径的原子进行计数
-                    newExtractList.append(eName+' '+str(ex)+' '+str(ey)+' '+str(ez)+'\n')     # 将满足要求的原子信息添加到列表中
-                    continue                               # 当编号的中心原子l和比较的j原子是同一原子时，跳出本次循环
-                if eName not in self.result[1]:            # 判断j原子是否是配位原子，如果不是，跳出循环
-                    continue
-                # 1. 基于上述判断后，j原子一定不是中心原子，也排除了不是配位原子的可能性，但不排斥中心原子和配位原子是同类原子的可能性
-                # 2. 由于j原子是配位原子，下面主要根据 l-j 原子对距离进行筛选和算法优化
-                for l in self.atomNumberRange:                 # self.atomNumberRange是传入的目标原子编号列表，即计算这些原子截断半径范围内的配位原子
-                    lName = self.xyzDict[i][l][0]
-                    lx = float(self.xyzDict[i][l][1])
-                    ly = float(self.xyzDict[i][l][2])
-                    lz = float(self.xyzDict[i][l][3])
-                    dx = abs(lx - ex)                          # 计算 j-l原子对 x 分坐标的插值
-                    dy = abs(ly - ey)
-                    dz = abs(lz - ez)
-                    # 只有当l-j原子对在三个方向上的分坐标差值大于盒子边长一半时，才需要考虑周期性变换的问题
-                    if dx <= 0.5 * self.xCell:
-                        tdx = dx
-                    else:
-                        tdx = self.xCell - dx
-                        # 考虑 j 原子可能的镜像x分坐标，只有当分坐标差值大于盒子边长一半时才需要考虑
-                        if lx > ex:                            # 当 l-j原子对x分坐标差值大于盒子边长一半时，且l的x分坐标大于j的分坐标时
-                            ex = ex + self.xCell               # j的x分坐标要加上盒子边长
-                        else:
-                            ex = ex - self.xCell
-                    
-                    if dy <= 0.5 * self.yCell:
-                        tdy = dy
-                    else:
-                        tdy = self.yCell - dy
-                        # 考虑 j 原子可能的镜像y分坐标，只有当分坐标差值大于盒子边长一半时才需要考虑
-                        if ly > ey:
-                            ey = ey + self.yCell
-                        else:
-                            ey = ey - self.yCell
-                    
-                    if dz <= 0.5 * self.zCell:
-                        tdz = dz
-                    else:
-                        tdz = self.zCell - dz   
-                        # 考虑 j 原子可能的镜像z分坐标，只有当分坐标差值大于盒子边长一半时才需要考虑
-                        if lz > ez:
-                            ez = ez + self.zCell
-                        else:
-                            ez = ez - self.zCell
-                    distance = math.sqrt( tdx**2 + tdy**2 + tdz**2 )     # 计算两个原子间的距离
-                    if distance > maxCutoff:                             # 如果j-l原子对距离大于最大的截断半径，则跳出循环
-                        continue
-                    if distance <= cutoffDict[lName+"-"+eName]:          # 判断 l-j 原子对距离是否小于相应截断半径
-                        # 需要考虑若两个或多个l中心原子同时满足与一个j配位原子的截断半径要求，
-                        # 1. 如果这些中心原子都满足dx，dy，dz都小于盒子边长的一半，则会重复写入相同的配位原子信息，即写入的配位原子坐标是盒子内的，非盒子外周期性扩增的
-                        # 2. 如果这些中心原子不满足dx，dy，dz都小于盒子边长的一半，也可能会重复写入相同的配位原子信息
-                        # 3. 对于不同的中心原子，在考虑周期性变换后，同一个配位原子的分坐标可能是不同的
-                        coordinationAtom = eName+' '+str(ex)+' '+str(ey)+' '+str(ez)
-                        if coordinationAtom + '\n' not in newExtractList:      # 避免重复写入相同的配位原子坐标信息，当某一个配位原子与某两个非常靠近的中心原子满足配位要求时，很可能会重复写入配位原子信息
-                            iExtract = iExtract +1                             # 对满足截断半径的原子进行计数
-                            newExtractList.append( coordinationAtom +'\n')     # 将满足要求的原子信息添加到列表中
-                        else:                                                  # 若已写入该配位原子信息，则跳过该中心原子。
-                            continue
-                        # break                                            # 跳出内层的for循环，避免可能出现同个原子重复写入
-            totalExtractList.append(str(iExtract)+'\n')         # 每一帧的第一行添加原子数，每一帧循环结束后添加原子数
-            totalExtractList.append(self.replace+'\n')          # 每一帧的第二行添加晶格信息参数，每一帧循环结束后添加晶格信息
-            finalExtractList = finalExtractList + totalExtractList + newExtractList               # 构建一个集成列表，将每一帧的信息都储存在该列表中
-        # for i in finalExtractList:
-        #     print(i)  
-        with open(self.saveFile,'w') as new_file:               # 将提取出来的每一帧原子坐标写入到文件中
-            for i,j in enumerate(finalExtractList):             # 遍历最终集成列表中的每一个元素，将其写入到文件中
-                new_file.write(j)      
-        print("目标原子局域结构输出文件已保存！") 
-        print("截断半径字典", cutoffDict)
-```
-
-
-
+⭐ **基于方法18和20提取xyz团簇结构文件：**
+1. 方法20与方法18的区别
+   - 方法20适用于各帧原子数不同的体系（原子编号不固定），不考虑周期性，不需要输入中心原子的编号，只需要输入中心原子种类即可，主要适用于团簇精细结构的提取。
+   - 方法20处理的文件通常来源于方法18生成的xyz轨迹文件，包含满足指定原子对截断半径要求的局域结构或者粗糙团簇结构文件（使用原子对第一截断半径和第二截断半径都可以）。
+   - 方法18考虑周期性，需要输入中心原子编号，各帧原子编号相对固定，各帧原子数一样。方法18基于原子对第二截断半径生成的文件后续可作为方法20的输入文件。
+2. 团簇结构提取思路：
+   - 先使用`方法18`基于原子对截断半径`B O 4.5 B Si 3.4 B B 3.18 B Al 3.5`提取某个B原子的多帧xyz文件，注意B-O原子对截断半径是RDF的第二个谷值，对应B-O第二截断半径，其余B-Si，B-B，B-Al都是第一截断半径。获取的多帧xyz轨迹文件是粗超的团簇结构文件，因为最外层的部分O原子是多余的，但是其余原子都是准确的。
+   - 再使用`方法20`基于原子对第一截断半径`B O 2.2 Si O 2.2 Al O 2.5`提取精细团簇结构，去掉多余的O，`B，Si，Al`在提取过程中，不会发生删减。获取的多帧xyz轨迹文件是精细的团簇结构。
+   - 通过ovito、Jmol、VMD等可视化上述精细xyz轨迹文件，确定目标团簇结构对应的帧数，使用`方法04`提取。
 
 
 
