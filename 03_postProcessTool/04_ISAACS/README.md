@@ -245,9 +245,29 @@ print("数据已成功写入B_isaacs.xlsx文件。")
 
 - 功能：打印脚本所在目录下的所有文件名，提示用户输入文件名。逐行读取文件，逐行判断，如果该行含有`%`，则保留该行数据，每一行的多列之间使用空格分隔，最后将所有含有%的行写入到 `xlsx` 文件中，仍然使用原文件名。
 
+txt格式的数据文件：`团簇百分比及分子式.txt`
+
+```
+a3 data (sorted by az1 ascending and col8 descending with cluster_combo):
+    0  1  2  3  4  5       6   7       8  9  az1 cluster_combo
+52  3  0  0  0  0  3   0.752  or   0.427  %    0            O3
+81  6  0  2  1  0  3   0.424  or   0.241  %    3       Al2B1O3
+63  6  1  0  2  0  3   0.133  or   0.076  %    3       Si1B2O3
+b3 data (sorted by bz1 ascending and col8 descending with cluster_combo):
+    0  1  2  3  4  5       6   7      8  9  bz1 cluster_combo
+92  4  0  0  0  0  4   0.024  or  0.013  %    0            O4
+42  8  3  0  1  0  4   1.067  or  0.606  %    4       Si3B1O4
+50  8  0  4  0  0  4   0.824  or  0.468  %    4         Al4O4
+86  8  1  1  2  0  4   0.024  or  0.013  %    4    Si1Al1B2O4
+x5: 94.88400000000001, x6: 53.914
+y5: 81.113, y6: 46.083
+```
+
 注意：生成的xlsx文件中，默认各列数据都是文本格式，excel可以直接转为数据格式。在排序过程中2，注意包含第一列数据，避免其不参与排序的问题。
 
-
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20241029-091144.png" alt="Image Description" width="900">
+</p>
 
 
 
