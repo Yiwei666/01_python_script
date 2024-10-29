@@ -32,7 +32,12 @@ with open(selected_file, 'r', encoding='utf-8') as file:
 
 # 将结果写入到新的 Excel 文件中
 output_file = selected_file.split('.')[0] + ".xlsx"
-df = pd.DataFrame(rows_with_percentage)
-df.to_excel(output_file, index=False, header=False)
 
-print(f"处理完成，包含 % 的行已写入文件: {output_file}")
+# 如果有数据才写入文件
+if rows_with_percentage:
+    # 创建 DataFrame 并写入 Excel，确保 header=False，避免第一行被视为表头
+    df = pd.DataFrame(rows_with_percentage)
+    df.to_excel(output_file, index=False, header=False)
+    print(f"处理完成，包含 % 的行已写入文件: {output_file}")
+else:
+    print("没有找到包含 % 的行。")
