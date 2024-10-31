@@ -73,8 +73,15 @@ def main():
     # 将结果保存为xlsx文件
     result_df = pd.DataFrame(filtered_results, index=files).transpose()
     result_df.columns = [f'文本{i+1}' for i in range(len(files))]  # 设置列名
+    
+    # 转置数据
+    transposed_result_df = result_df.transpose()
+
+    # 保存结果到Excel文件中
     result_filename = f"{TO}-{BO}.xlsx"
-    result_df.to_excel(result_filename)
+    with pd.ExcelWriter(result_filename, engine='openpyxl') as writer:
+        result_df.to_excel(writer, sheet_name='原始数据')  # 写入原始数据
+        transposed_result_df.to_excel(writer, sheet_name='转置数据')  # 写入转置后的数据
 
     # 打印表格格式结果
     print(result_df)
