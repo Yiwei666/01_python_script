@@ -1,5 +1,60 @@
 import os
 import pandas as pd
+import re
+
+def convert_key_format(key):
+    """
+    根据给定的规则转换键的格式。
+    """
+    # 提取键中元素及其数量
+    pattern = r"([A-Za-z]+)(\d*)"
+    elements = re.findall(pattern, key)
+
+    # 初始化 a, b, c, d 为 0
+    a, b, c, d = 0, 0, 0, 0
+
+    for elem, count in elements:
+        count = int(count) if count else 1  # 如果数量为空，则默认数量为1
+        if elem == 'Si':
+            a = count
+        elif elem == 'Al':
+            b = count
+        elif elem == 'B':
+            c = count
+        elif elem == 'O':
+            d = count
+
+    # 计算 x = d - a - b - c
+    x = d - a - b - c
+
+    # 开始拼接结果字符串
+    result = "B"
+
+    # 如果 x 不为0和1，添加 "O\-(x)"
+    if x > 1:
+        result += f"O\\-({x})"
+    elif x == 1:
+        result += "O"
+
+    # 如果 c 不为0和1，添加 "(BO\-(3))\-(c)"
+    if c > 1:
+        result += f"(BO\\-(3))\\-({c})"
+    elif c == 1:
+        result += "(BO\\-(3))"
+
+    # 如果 b 不为0和1，添加 "(AlO\-(4))\-(b)"
+    if b > 1:
+        result += f"(AlO\\-(4))\\-({b})"
+    elif b == 1:
+        result += "(AlO\\-(4))"
+
+    # 如果 a 不为0和1，添加 "(SiO\-(4))\-(a)"
+    if a > 1:
+        result += f"(SiO\\-(4))\\-({a})"
+    elif a == 1:
+        result += "(SiO\\-(4))"
+
+    return result
 
 def read_data_from_txt(file):
     with open(file, 'r', encoding='utf-8') as f:
@@ -76,6 +131,11 @@ def main():
     
     # 转置数据
     transposed_result_df = result_df.transpose()
+
+    # 新增一行转换后的键
+    converted_keys = {key: convert_key_format(key) for key in filtered_results.keys()}
+    converted_keys_row = pd.DataFrame([converted_keys], index=["转换后的键"])
+    transposed_result_df = pd.concat([transposed_result_df, converted_keys_row])
 
     # 保存结果到Excel文件中
     result_filename = f"{TO}-{BO}.xlsx"
