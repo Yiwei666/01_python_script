@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from openpyxl import Workbook
 
 def read_data_from_txt(file):
     with open(file, 'r', encoding='utf-8') as f:
@@ -64,8 +63,15 @@ def main():
             else:
                 results[key].append(0)  # 没有满足条件的情况用0代替
 
+    # 移除所有值均为0的键
+    filtered_results = {key: val for key, val in results.items() if any(x != 0 for x in val)}
+
+    if not filtered_results:
+        print("没有满足条件的键值，结果为空。")
+        return
+
     # 将结果保存为xlsx文件
-    result_df = pd.DataFrame(results, index=files).transpose()
+    result_df = pd.DataFrame(filtered_results, index=files).transpose()
     result_df.columns = [f'文本{i+1}' for i in range(len(files))]  # 设置列名
     result_filename = f"{TO}-{BO}.xlsx"
     result_df.to_excel(result_filename)
