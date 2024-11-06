@@ -1289,8 +1289,9 @@ class Xyz():
             list1.append(average2)   # 再将平均后的概率密度添加到一个新的列表
         print(list1)                  # 将最终的列表打印
         # plt.scatter(volDelta[0:50],list1[0:50],s=100)
-        nPlotFrom = math.ceil(1.5/xdelta)      # 1.5是指画图
-        nPlotTo = math.ceil(5.0/xdelta)
+        # nPlotFrom = math.ceil(1.5/xdelta)      # 1.5是指画图
+        nPlotFrom = 0
+        nPlotTo = math.ceil(6.0/xdelta)
         plt.plot(radiusList[nPlotFrom:nPlotTo],list1[nPlotFrom:nPlotTo],linewidth=0.5) # 绘图，其中radiusList = [ 0.5xdelta, 1.5xdelta, ... , (self.dotNumber-0.5)*xdelta ]
         x_major_locator = MultipleLocator(0.25) # 把x轴的刻度间隔设置为1，并存在变量里
         y_major_locator = MultipleLocator(0.5) # 把y轴的刻度间隔设置为0.5，并存在变量里
@@ -1963,10 +1964,10 @@ if __name__ == '__main__':
             # print("采用默认 09_rdfData.txt ")        
         print("请输入原子对，如 V-Si")
         atomicPair = input()                                                      # 注意字符串输入变量的数据类型转换
-        print("设置取点数目n，输入Enter默认为 n = 300 ")                          # 提示命令行输入
+        print("设置取点数目n，输入Enter默认为 n = 500 ")                          # 提示命令行输入
         n = input()                                                             # 注意字符串输入变量的数据类型转换
         if n == '' :
-            n = 300
+            n = 500
         else:
             n = int(n)                                                   
         
