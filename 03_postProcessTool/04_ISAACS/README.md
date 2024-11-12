@@ -23,6 +23,14 @@
 
 ### `09_基于电负性差值计算共价键和离子键比例.py`
 
+$$
+\% \text{ionic character} = \left(1 - e^{-\frac{1}{4} (X_A - X_B)^2}\right) \times 100\%
+$$
+
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20241109-154408.png" alt="Image Description" width="900">
+</p>
 
 
 
