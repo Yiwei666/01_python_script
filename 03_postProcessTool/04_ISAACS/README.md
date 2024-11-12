@@ -23,8 +23,10 @@
 
 ### `09_基于电负性差值计算共价键和离子键比例.py`
 
+- 离子键成分占比
+
 $$
-\% \text{ionic character} = \left(1 - e^{-\frac{1}{4} (X_A - X_B)^2}\right) \times 100\%
+ionic = \left(1 - e^{-\frac{1}{4} (X_A - X_B)^2}\right) \times 100\%
 $$
 
 
