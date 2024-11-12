@@ -12,7 +12,7 @@
 4. 注意上述获得的pdos数据是同类（多个）原子总的pdos，如果各类原子数不同，通过峰的强弱比较成键强弱时需要归一化。
 
 <p align="center">
-<img src="https://19640810.xyz/05_image/01_imageHost/20241109-154408.png" alt="Image Description" width="1000">
+<img src="https://19640810.xyz/05_image/01_imageHost/20241109-154408.png" alt="Image Description" width="900">
 </p>
 
 5. 可以通过电负性差异辅助判断成键类型，电负性数据如下所示。
