@@ -1,0 +1,40 @@
+# Visualize an XYZ file using the rendering styles defined above
+proc xyz {filename} {
+    # Set default material to Glossy
+    set mater Glossy
+
+    # Set display environment
+    color Display Background white
+    display depthcue off
+    display rendermode GLSL
+    axes location Off
+
+    # Set colors and material properties
+    color Name C tan
+    color change rgb tan 0.700000 0.560000 0.360000
+    material change mirror Opaque 0.0
+    material change outline Opaque 4.000000
+    material change outlinewidth Opaque 0.5
+    material change ambient Glossy 0.1
+    material change diffuse Glossy 0.600000
+    material change opacity Glossy 0.75
+    material change shininess Glossy 1.0
+    light 3 on
+
+    # Delete existing molecules
+    foreach i [molinfo list] {
+        mol delete $i
+    }
+
+    # Load the XYZ file
+    mol new $filename.xyz type xyz
+
+    # Apply CPK rendering for atoms
+    mol modstyle 0 top CPK 0.800000 0.300000 22.000000 22.000000
+    mol modcolor 0 top Element
+    mol addrep top
+
+    # Set display distance and height
+    display distance -8.0
+    display height 10
+}
