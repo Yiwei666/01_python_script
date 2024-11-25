@@ -15,3 +15,17 @@ visualize_xyz.vmd              # xyz文件可视化渲染
 
 
 # 3. 环境配置
+
+
+```
+cub  EDD.cub  0.008      # EDD.cub文件
+xyz slagF135             # slagF135.xyz文件
+```
+
+
+
+
+
+
+
+
