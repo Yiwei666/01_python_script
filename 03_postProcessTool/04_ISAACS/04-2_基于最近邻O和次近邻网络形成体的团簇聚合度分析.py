@@ -20,7 +20,7 @@ col5_list = [3, 4, 5, 6]
 # 读取数据文件，忽略前3行
 data = pd.read_csv('B_isaacs.txt', sep='\s+', skiprows=3, header=None)
 
-# ============= 2. 基础统计：a0（全部数据） =============
+# ============= 2. 基础统计：a0（全部数据） ============= 
 print("=== 全部数据（a0） ===")
 print(data)
 
@@ -29,7 +29,7 @@ t1 = data[col6].sum()
 t2 = data[col8].sum()
 print(f"[全部数据] B原子数之和 (t1): {t1}, 百分比之和 (t2): {t2}\n")
 
-# ============= 3. 检查 col5_list 中的值是否都存在 =============
+# ============= 3. 检查 col5_list 中的值是否都存在 ============= 
 unique_col5_values = data[col5].unique()
 for val in col5_list:
     if val not in unique_col5_values:
@@ -89,7 +89,7 @@ for idx, val in enumerate(col5_list):
 # ============= 5. 计算 k0, k1, k2, ... 及相关统计 =============
 
 # （在原代码中只针对 a2, b2 计算了 k0、k1、k2。
-#  如果希望扩展到 c2、d2... 就需要将它们都包含在总和里。下面的思路是“将所有 data2 的 B原子数之和”做分母或分子。）
+#  如果希望扩展到 c2、d2... 就需要将它们都包含在总和里。下面的思路是“将所有 data2 的 B原子数之和”做分母或分子。） 
 total_sum3 = sum(sum3_dict[val] for val in col5_list)  # 相当于 (x3 + y3 + z3 + ...)
 total_sum4 = sum(sum4_dict[val] for val in col5_list)  # 相当于 (x4 + y4 + z4 + ...)
 
@@ -108,11 +108,20 @@ for val in col5_list:
     else:
         ratio_val = 0
     print(f"配位数 {val} 的比例 = {ratio_val:.4f}")
+    # 新增：打印每个 z1 对应的行数据
+    for z1_val in range(val + 1):
+        subset_2 = data2_dict[val][data2_dict[val][f"z1_{val}"] == z1_val]
+        sum_col8_before = subset_2[col8].sum()
+        sum_col8_after = (subset_2[col8] / k0).sum() if k0 != 0 else sum_col8_before
+        print(f"  z1 = {z1_val}, 数据行：\n{subset_2}")
+        print(f"  z1 = {z1_val}, 未归一化前的 col8 总和: {sum_col8_before}")
+        print(f"  z1 = {z1_val}, 归一化后的 col8 总和: {sum_col8_after}")
+
 print()
 
-# ============= 6. 进一步细分（类似 as0, as1, as2, as3 以及 bs0, bs1...） =============
-# 这里原先只做了 a2, b2 的分组统计，现在扩展到对所有 data2_dict[val] 做同样处理。
-# 对于 col5 = val 的 data2，需要按 z1 从 0 到 val 来分组（与原始代码思路相同）。
+# ============= 6. 进一步细分（类似 as0, as1, as2, as3 以及 bs0, bs1...） ============= 
+# 这里原先只做了 a2, b2 的分组统计，现在扩展到对所有 data2_dict[val] 做同样处理。 
+# 对于 col5 = val 的 data2，需要按 z1 从 0 到 val 来分组（与原始代码思路相同）。 
 
 for val in col5_list:
     subset_2 = data2_dict[val]
@@ -128,9 +137,9 @@ for val in col5_list:
 
     print(f"总和 = {sum(group_sums)}\n")
 
-# ============= 7. 生成 3 系列数据集（a3, b3, c3...），并对 col6, col8 做归一化、生成 cluster_combo 字段等 =============
-# 这里原先代码是：a3 = a2.copy(); a3[col6]/=k0, a3[col8]/=k0, 然后 round(3)，然后生成 cluster_combo。
-# 现在我们给每个 val 对应生成 data3[val]。
+# ============= 7. 生成 3 系列数据集（a3, b3, c3...），并对 col6, col8 做归一化、生成 cluster_combo 字段等 ============= 
+# 这里原先代码是：a3 = a2.copy(); a3[col6]/=k0, a3[col8]/=k0, 然后 round(3)，然后生成 cluster_combo。 
+# 现在我们给每个 val 对应生成 data3[val]。 
 
 data3_dict = {}
 
