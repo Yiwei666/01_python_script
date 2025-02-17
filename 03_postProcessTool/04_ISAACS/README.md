@@ -25,11 +25,11 @@
 ### 2. g(r)和CN相关
 
 ```
-01_合并RDF或CN.py
 01_plot_RDF.py
 01-2_plot_RDF_通过序号确定文件.py
 01_plot_CN.py
 01-2_plot_CN_通过序号确定文件.py
+01_合并RDF或CN.py
 ```
 
 
