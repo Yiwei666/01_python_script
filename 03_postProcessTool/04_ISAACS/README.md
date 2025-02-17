@@ -349,7 +349,7 @@ y5: 87.59800000000001, y6: 49.211000000000006
 
 
 
-2. 环境变量：体系中不含Al体系（CaO-SiO2-B2O3）
+- 输入文件示例：体系中不含Al体系（CaO-SiO2-B2O3）
 
 ```
 Environments for B  atoms:
@@ -361,7 +361,7 @@ N(tot)   N(Si)   N(B )   N(Ca)   N(O )          Number   or     Percent
   6        3       0       0       3          29.71000   or      16.691 %
 ```
 
-- 环境变量
+环境变量：
 
 ```py
 # 定义 cluster 字典，键为元素符号，值为对应的列数（列数等于列的索引+1）
@@ -383,7 +383,7 @@ col5_list = [3, 4]
 需要修改的环境变量包括 `Number Percent O` 、`Si B` 所在的列数 以及 中心原子配位的氧原子数列表 `col5_list`
 
 
-3. 环境变量：体系中含Al体系（CaO-SiO2-Al2O3-B2O3）
+- 输入文件示例：体系中含Al体系（CaO-SiO2-Al2O3-B2O3）
 
 ```
 Environments for B  atoms:
@@ -396,7 +396,7 @@ N(tot)   N(Si)   N(Al)   N(B )   N(Ca)   N(O )          Number   or     Percent
   8        4       0       0       0       4          10.60000   or      11.778 %
 ```
 
-- 环境变量
+环境变量：
 
 ```py
 # 定义 cluster 字典，键为元素符号，值为对应的列数（列数等于列的索引+1）
