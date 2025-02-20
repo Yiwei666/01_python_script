@@ -876,7 +876,9 @@ Partial bond order density（PBOD）：各类键的键级总和/模拟盒子体�
 
 - 源码：[21_extract_scf_step.sh](21_extract_scf_step.sh)
 
-- 功能：遍历当前目录下的 `tem.out` 文件（cp2k输出文件），查找包含 `“SCF run converged in”` 的行提取SCF步数以及包含 `“MD| Step number”` 的行提取MD步数。然后将这两组数据配对写入 `step_scf.txt` 文件中，实现将每个MD步对应的SCF收敛步数输出到文件的功能。
+- 功能：推荐运行在超算，遍历当前目录下的 `tem.out` 文件（cp2k输出文件），查找包含 `“SCF run converged in”` 的行提取SCF步数以及包含 `“MD| Step number”` 的行提取MD步数。然后将这两组数据配对写入 `step_scf.txt` 文件中，实现将每个MD步对应的SCF收敛步数输出到文件的功能。
+
+- 生成的`step_scf.txt`文件，可以使用本地 [01_plot_colvar.py](https://github.com/Yiwei666/06_Metadynamics/blob/main/python/01_plot_colvar.py) 脚本进行绘图。
 
 - 编程思路：
 
