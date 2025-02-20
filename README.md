@@ -907,6 +907,12 @@ alias scfp='grep "SCF run converged in" tem.out | nl'
 alias sfmd='bash /public21/home/sc90511/tool_user_defined/21_extract_scf_step.sh'
 ```
 
+- 结果示例
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250220-151927.png" alt="Image Description" width="450">
+</p>
+
 
 
 ### 🟢 `21_ener绘离子步耗时图.py`
@@ -916,6 +922,12 @@ alias sfmd='bash /public21/home/sc90511/tool_user_defined/21_extract_scf_step.sh
 - 功能：读取CP2K输出的ener文件，提取离子步、时间和耗时等数据，并根据用户选择绘制离子步耗时的变化曲线。用户可选择绘制所有步数或分段绘制，程序会计算并输出平均耗时，同时支持自定义刻度和保存图片。
 
 
+- 结果示例
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250220-152028.png" alt="Image Description" width="450">
+</p>
+
 
 
 ### `20_ener分步绘温度能量图.py`
@@ -924,7 +936,26 @@ alias sfmd='bash /public21/home/sc90511/tool_user_defined/21_extract_scf_step.sh
 
 - 功能：从CP2K输出的ener文件中提取步数、时间、温度和势能等数据，并根据用户指定的步数分界来选择数据区间。随后，它利用Matplotlib绘制了温度与步数和势能与时间的变化图，同时提供了保存图像的选项。
 
+- `20_ener分步绘温度能量图.py`相比于`12_ener文件绘温度能量图.py`脚本，增加了数据区间划分的功能，使用户可以根据指定的分界步数选择数据子区间进行绘图。
+
 注意：该功能已经耦合到 `58_[47类]轨迹分析和绘图.py` 脚本的 `05方法` 中。
+
+
+- 结果示例
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250220-152114.png" alt="Image Description" width="450">
+</p>
+
+
+
+
+### `12_ener文件绘温度能量图.py`
+
+- 源码：[12_ener文件绘温度能量图.py](12_ener文件绘温度能量图.py)
+
+- 功能：对cp2k输出的ener文件数据的整体处理与绘图。程序会读取文件中除首行标题外的所有数据，并绘制两幅图：上图显示温度随步数变化的曲线，下图显示势能随时间变化的曲线。
+
 
 
 
