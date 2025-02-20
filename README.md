@@ -872,7 +872,7 @@ Partial bond order density（PBOD）：各类键的键级总和/模拟盒子体�
 
 
 
-### `21_extract_scf_step.sh`
+### 🟢 `21_extract_scf_step.sh`
 
 - 源码：[21_extract_scf_step.sh](21_extract_scf_step.sh)
 
@@ -896,9 +896,20 @@ MD| Step number                                                            4203
 ```
 
 
+- 相关命令行alias
+
+```sh
+# 通过命令行查看 tem.out 文件中的相关步数
+alias step='grep "MD| Step number" tem.out'
+alias scfp='grep "SCF run converged in" tem.out | nl'
+
+# 将该脚本放在超算服务器下的某一路径，通过 sfmd 在命令执行路径下生成 step_scf.txt 文件
+alias sfmd='bash /public21/home/sc90511/tool_user_defined/21_extract_scf_step.sh'
+```
 
 
-🟢 ### `21_ener绘离子步耗时图.py`
+
+### 🟢 `21_ener绘离子步耗时图.py`
 
 - 源码：[21_ener绘离子步耗时图.py](21_ener绘离子步耗时图.py)
 
@@ -907,7 +918,7 @@ MD| Step number                                                            4203
 
 
 
-🟢 ### `20_ener分步绘温度能量图.py`
+### `20_ener分步绘温度能量图.py`
 
 - 源码：[20_ener分步绘温度能量图.py](20_ener分步绘温度能量图.py)
 
