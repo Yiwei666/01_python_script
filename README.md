@@ -872,6 +872,32 @@ Partial bond order density（PBOD）：各类键的键级总和/模拟盒子体�
 
 
 
+### `21_extract_scf_step.sh`
+
+- 源码：[21_extract_scf_step.sh](21_extract_scf_step.sh)
+
+- 功能：遍历当前目录下的 `tem.out` 文件（cp2k输出文件），查找包含 `“SCF run converged in”` 的行提取SCF步数以及包含 `“MD| Step number”` 的行提取MD步数。然后将这两组数据配对写入 `step_scf.txt` 文件中，实现将每个MD步对应的SCF收敛步数输出到文件的功能。
+
+- 编程思路：
+
+```
+能不能编写一个bash脚本实现以下功能： 
+1. 当前目录下有一个  tem.out 文件，里面有很多行，现在我需要提取类似如下两行中的数据，并且把它写入到 step_scf.txt 文件中，分为两列，第一列数据是 "MD| Step number"，第二列数据是 "SCF run converged in" ，写入到的txt文件不需要表头，两列数据使用空格分隔。
+
+2. tem.out中相关行示例：
+*** SCF run converged in     8 steps ***
+MD| Step number                                                            4203
+
+注意：SCF run converged in在tem.out文件中会先出现，然后再出现对应的 MD| Step number 行。
+
+3. 建议先遍历 tem.out文件，提取 "MD| Step number" 行的数值作为第一列，然后再遍历文件，提取  "SCF run converged in" 行的数值作为第二列。
+
+4. 获取当前命令执行的所在目录，将  step_scf.txt 文件保存到当前目录下。
+```
+
+
+
+
 ### `21_ener绘离子步耗时图.py`
 
 - 源码：[21_ener绘离子步耗时图.py](21_ener绘离子步耗时图.py)
