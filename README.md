@@ -903,7 +903,7 @@ MD| Step number                                                            4203
 alias step='grep "MD| Step number" tem.out'
 alias scfp='grep "SCF run converged in" tem.out | nl'
 
-# 将该脚本放在超算服务器下的某一路径，通过 sfmd 在命令执行路径下生成 step_scf.txt 文件
+# 将该脚本放在超算服务器下的某一路径，通过 sfmd 在命令执行路径下生成 step_scf.txt 文件，不需要在每一个 tem.out 路径下放置一个 21_extract_scf_step.sh 脚本
 alias sfmd='bash /public21/home/sc90511/tool_user_defined/21_extract_scf_step.sh'
 ```
 
