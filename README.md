@@ -915,6 +915,7 @@ alias sfmd='bash /public21/home/sc90511/tool_user_defined/21_extract_scf_step.sh
 
 
 
+
 ### 🟢 `21_ener绘离子步耗时图.py`
 
 - 源码：[21_ener绘离子步耗时图.py](21_ener绘离子步耗时图.py)
@@ -946,6 +947,16 @@ alias sfmd='bash /public21/home/sc90511/tool_user_defined/21_extract_scf_step.sh
 <p align="center">
 <img src="https://19640810.xyz/05_image/01_imageHost/20250220-152114.png" alt="Image Description" width="450">
 </p>
+
+
+
+### `19_特定编号原子周围半径r范围内原子.py`
+
+- 源码：[19_特定编号原子周围半径r范围内原子.py](19_特定编号原子周围半径r范围内原子.py)
+
+- 功能：在多帧xyz文件中，根据用户指定的原子编号和截断半径，筛选出每一帧中距离指定原子较近的其他原子，并将每帧的筛选结果（包括统计数量和具体坐标信息）写入到一个新的xyz格式文件中。
+
+注意：`19_[超快速] 特定编号原子周围半径r范围内原子.py`相比于`19_特定编号原子周围半径r范围内原子.py`，唯一的区别在于注释了很多 print 语句。
 
 
 
