@@ -4,6 +4,7 @@ import pandas as pd
 
 # 定义常数
 i, j, k, l = 1.16, 1.14, 0.657, 0.186
+m = 1.16  # 用于管理 w 公式中的常数 1.16
 
 # 定义输出的Excel文件名
 output_file = "最近邻和次近邻_MBO_sum.xlsx"
@@ -58,7 +59,7 @@ for txt_file in txt_files:
         # 计算x、v、w
         x = d - a - b - c
         v = 0.01 * list_vals[2] * (a * i + b * j + c * k + x * l)
-        w = 0.01 * list_vals[2] * (1.16 * d)
+        w = 0.01 * list_vals[2] * (m * d)
 
         # 累加v和w
         sv += v
