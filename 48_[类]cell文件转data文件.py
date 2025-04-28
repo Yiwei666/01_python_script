@@ -198,17 +198,32 @@ class cellConventer():
                 massStr = str(i+1)+' '+ self.atomKindDict[j] + ' # '+ j
                 new_file.write( massStr +"\n")                            # 第12起行写入原子类型和相对原子质量，列表索引i是从0开始的
             new_file.write("\n")                                          # 空行
-            new_file.write('Atoms # charge'+"\n")                         # 写入Atoms，注释为charge类型
-            new_file.write("\n")                                          # 空行
-            # 1	1	0	10.11087605	10.30264943	5.200900751
-            imass = 1
-            for i,j in enumerate(inputAtomList):
-                for k in list(self.atomDict.keys()):
-                    if j == self.atomDict[k][0]:        # 判断元素种类 self.atomDict =  {224: ['V', 9.695581698968155, 1.9771535016091875, 15.01112129458808]}
-                        dataLine = str(imass) +' '+str(i+1)+ ' 0 '+str(self.atomDict[k][1])+' '+str(self.atomDict[k][2])+' '+str(self.atomDict[k][3])
-                        new_file.write(dataLine +"\n")                   # 将序号，原子类型，电荷和坐标写入到data文件中
-                        imass += 1
-       
+            choice = input("请选择 atomic_style（输入 1 代表 'charge'，输入 2 代表 'atomic'）：")
+            if choice == '1':      # charge 原子格式
+                new_file.write('Atoms # charge'+"\n")                         # 写入Atoms，注释为charge类型
+                new_file.write("\n")                                          # 空行
+                # 1 1   0   10.11087605 10.30264943 5.200900751
+                imass = 1
+                for i,j in enumerate(inputAtomList):
+                    for k in list(self.atomDict.keys()):
+                        if j == self.atomDict[k][0]:        # 判断元素种类 self.atomDict =  {224: ['V', 9.695581698968155, 1.9771535016091875, 15.01112129458808]}
+                            dataLine = str(imass) +' '+str(i+1)+ ' 0 '+str(self.atomDict[k][1])+' '+str(self.atomDict[k][2])+' '+str(self.atomDict[k][3])
+                            new_file.write(dataLine +"\n")                   # 将序号，原子类型，电荷和坐标写入到data文件中
+                            imass += 1
+
+            elif choice == '2':    # atomic 原子格式
+                new_file.write('Atoms # atomic'+"\n")                         # 写入Atoms，注释为charge类型
+                new_file.write("\n")                                          # 空行
+                # 1 1   0   10.11087605 10.30264943 5.200900751
+                imass = 1
+                for i,j in enumerate(inputAtomList):
+                    for k in list(self.atomDict.keys()):
+                        if j == self.atomDict[k][0]:        # 判断元素种类 self.atomDict =  {224: ['V', 9.695581698968155, 1.9771535016091875, 15.01112129458808]}
+                            dataLine = str(imass) +' '+str(i+1)+ ' '+str(self.atomDict[k][1])+' '+str(self.atomDict[k][2])+' '+str(self.atomDict[k][3])
+                            new_file.write(dataLine +"\n")                   # 将序号，原子类型，电荷和坐标写入到data文件中
+                            imass += 1
+            else:
+                print("输入无效，请输入1或2。")
 
 def inputFunction():     # 打印出当前目录下的所有文件名
     print("默认打开当前目录，是否调用GUI获取文件路径?Yes=1,No=2, 直接输入Enter键默认为2")     # 提示命令行输入
@@ -284,7 +299,3 @@ print('''
 该任务执行完毕，祝您工作顺利!\n任务总耗时：
 ''',timeDuration)
      
-
-
-
-
