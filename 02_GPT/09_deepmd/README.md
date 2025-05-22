@@ -6,3 +6,6 @@
 4. [甲烷分子上手案例](/02_GPT/09_deepmd/9-004.md)
 5. [文献总结](/02_GPT/09_deepmd/9-005.md)
 6. [dp-gen输入文件和关键词](/02_GPT/09_deepmd/9-006.md)
+7. [dpgen源码分析](/02_GPT/09_deepmd/9-007.md)
+8. [dpgen运行和结果分析](/02_GPT/09_deepmd/9-008.md)
+9. [常见报错和分析](/02_GPT/09_deepmd/9-009.md)
