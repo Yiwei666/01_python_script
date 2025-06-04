@@ -10,4 +10,5 @@
 8. [dpgen运行和结果分析](/02_GPT/09_deepmd/9-008.md)
 9. [dpgen常见报错和分析](/02_GPT/09_deepmd/9-009.md)
 10. [dpdata 的 CP2KData 插件](/02_GPT/09_deepmd/9-010.md)
+11. [cp2kdata源码分析](/02_GPT/09_deepmd/9-011.md)
 
