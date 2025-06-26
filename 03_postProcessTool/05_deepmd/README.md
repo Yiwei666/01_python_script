@@ -109,6 +109,48 @@ Direct
 
 
 
+# 4. lcurve.out 绘图
+
+### 1. `04_plot_lcurve.py`
+
+X 轴和 Y 轴都用对数刻度（plt.loglog），适合同时跨越大范围的步数和损失值。
+
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250626-092217.png" alt="Image Description" width="500">
+</p>
+
+
+
+### 2. `04-2_xyPlot_lcurve.py`
+
+X、Y 轴均为线性刻度（plt.plot），用于数据变化幅度较小且接近线性的情况。
+
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250626-092251.png" alt="Image Description" width="500">
+</p>
+
+
+
+
+### 3. `04-3_ySemi_plot_lcurve.py`
+
+X 轴线性、Y 轴对数刻度（plt.semilogy），强调损失值的指数级变化，而保留步数的线性分布。
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250626-092309.png" alt="Image Description" width="500">
+</p>
+
+
+
+
+
+
+
+
+
+
 
 
 
