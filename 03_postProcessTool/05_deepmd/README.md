@@ -145,6 +145,36 @@ X 轴线性、Y 轴对数刻度（plt.semilogy），强调损失值的指数级�
 
 
 
+# 5. 能量和力(xyz分量)预测
+
+
+## 1. `05-1_plot_energy_correlation.py`
+
+注意：该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
+
+1. 从 DeepMD 格式的数据集中读取 DFT 能量，并使用训练好的深度势模型（graph.pb）对能量进行预测。
+
+2. 将真实 DFT 能量与预测能量绘制散点图，添加 y=x 参考线后保存为 `energy_scatter.png`。
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250626-102622.png" alt="Image Description" width="500">
+</p>
+
+
+
+
+## 2. `05-2_plot_force_correlation.py`
+
+注意：该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
+
+1. 同样读取 DeepMD 数据并对力张量进行预测，然后将每个原子在 x、y、z 三个方向上的参考力与预测力分别展开为一维数组。
+
+2. 针对每个分量绘制散点图并添加 y=x 参考线，标注单位、标题后保存为对应的 `force_x_scatter.png、force_y_scatter.png、force_z_scatter.png`。
+
+<p align="center">
+<img src="https://19640810.xyz/05_image/01_imageHost/20250626-102637.png" alt="Image Description" width="500">
+</p>
+
 
 
 
