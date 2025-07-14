@@ -1,8 +1,8 @@
-# 1. 项目功能
+# a. 项目功能
 
 针对deepmd-kit进行深度势能训练的数据处理脚本
 
-# 2. 文件结构
+# b. 文件结构
 
 ```py
 01_extract_poscar-from-vmd_frames.py             # vmd导出的poscar文件标准化及指定帧提取
