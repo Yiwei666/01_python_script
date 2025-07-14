@@ -1,3 +1,22 @@
+# 1. 项目功能
+
+针对deepmd-kit进行深度势能训练的数据处理脚本
+
+# 2. 文件结构
+
+```py
+01_extract_poscar-from-vmd_frames.py             # vmd导出的poscar文件标准化及指定帧提取
+02_frc_unit_converter_hartree_bohr.py            # frc.xyz文件单位转换
+03_extract_xyz_every_n_frames.py                 # xyz文件每10帧提取一帧
+04_plot_lcurve.py                                # X 轴和 Y 轴都用对数刻度（plt.loglog），适合同时跨越大范围的步数和损失值
+04-2_xyPlot_lcurve.py                            # X、Y 轴均为线性刻度（plt.plot），用于数据变化幅度较小且接近线性的情况
+04-3_ySemi_plot_lcurve.py                        # X 轴线性、Y 轴对数刻度（plt.semilogy），强调损失值的指数级变化，而保留步数的线性分布
+05-1_plot_energy_correlation.py                  # 能量预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
+05-2_plot_force_correlation.py                   # 力(xyz分量)预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
+```
+
+
+
 
 # 1. 01_extract_poscar-from-vmd_frames.py
 
