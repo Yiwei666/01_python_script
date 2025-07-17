@@ -13,6 +13,7 @@
 04-3_ySemi_plot_lcurve.py                        # X 轴线性、Y 轴对数刻度（plt.semilogy），强调损失值的指数级变化，而保留步数的线性分布
 05-1_plot_energy_correlation.py                  # 能量预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
 05-2_plot_force_correlation.py                   # 力(xyz分量)预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
+06-1_split_cp2k_multi-trajectories_o3_one-process.py        # 适用于多个体系/组分训练集和验证集的划分
 ```
 
 
@@ -194,6 +195,208 @@ X 轴线性、Y 轴对数刻度（plt.semilogy），强调损失值的指数级�
 <img src="https://19640810.xyz/05_image/01_imageHost/20250626-102637.png" alt="Image Description" width="500">
 </p>
 
+
+
+# 6. `06-1_split_cp2k_multi-trajectories_o3_one-process.py `
+
+[06-1_split_cp2k_multi-trajectories_o3_one-process.py ](06-1_split_cp2k_multi-trajectories_o3_one-process.py )
+
+
+## 1. 编程思路
+
+- 单条xyz轨迹划分脚本
+
+```py
+import dpdata
+import numpy as np
+
+# 1. 读取 CP2K AIMD 输出并统计总帧数
+data = dpdata.LabeledSystem('./', cp2k_output_name='tem.out', fmt='cp2kdata/md')
+total_frames = len(data)
+print(f'# 原始数据包含 {total_frames} 帧')
+
+# 2. 随机抽取 20 帧作为验证集索引（不重复）
+index_validation = np.random.choice(total_frames, size=20, replace=False)
+print(f'# 验证集索引（共 {len(index_validation)} 帧）：{sorted(index_validation)}')
+
+# 3. 其余帧中每隔 5 帧提取 1 帧作为训练集索引
+remaining = sorted(set(range(total_frames)) - set(index_validation))
+index_training = remaining[::5]
+print(f'# 训练集索引（共 {len(index_training)} 帧）：{index_training}')
+
+# 4. 根据索引拆分子系统
+data_training   = data.sub_system(index_training)
+data_validation = data.sub_system(index_validation)
+
+# 5. 保存为 DeepMD-kit 格式
+data_training.to_deepmd_npy('./00.data/training_data')
+data_validation.to_deepmd_npy('./00.data/validation_data')
+
+print(f'# 训练数据包含 {len(data_training)} 帧，已保存到 "./00.data/training_data"')
+print(f'# 验证数据包含 {len(data_validation)} 帧，已保存到 "./00.data/validation_data"')
+```
+
+
+上述python脚本是使用dpdata/cp2kdata提取tem.out等文件中的原子坐标、力、能量等信息，转化为deepmd-kit支持的npy格式，并划分训练集和验证集。上述脚本假设tem.out等文件位于当前目录下，且只包含单条xyz轨迹文件信息(因为仅包含一个路径和tem.out文件)。现在我想要针对多个轨迹文件进行训练集和验证集的划分、合并，下面有两个相关、可以作为参考的脚本：
+
+
+
+
+- [多条轨迹划分脚本](https://docs.deepmodeling.com/projects/dpdata/en/stable/systems/multi.html)
+
+```py
+from dpdata import LabeledSystem, MultiSystems
+from glob import glob
+
+"""
+process multi systems
+"""
+fs = glob("./*/OUTCAR")  # remeber to change here !!!
+ms = MultiSystems()
+for f in fs:
+    try:
+        ls = LabeledSystem(f)
+    except:
+        print(f)
+    if len(ls) > 0:
+        ms.append(ls)
+
+ms.to_deepmd_raw("deepmd")
+ms.to_deepmd_npy("deepmd")
+```
+
+
+
+
+
+- [多条轨迹划分脚本](https://github.com/deepmodeling/dpdata/issues/378)
+
+```py
+from dpdata import System, LabeledSystem, MultiSystems
+import numpy as np
+
+####### 读入轨迹 #######
+ls1=LabeledSystem('./Walker_0', cp2k_output_name='cp2k.log', fmt="cp2kdata/md")
+ls2=LabeledSystem('./Walker_1', cp2k_output_name='cp2k.log', fmt="cp2kdata/md")
+ls3=LabeledSystem('./Walker_2', cp2k_output_name='cp2k.log', fmt="cp2kdata/md")
+
+####### 验证集结构数 #######
+#a1 = np.random.choice(len(ls1),size=30,replace=False) #随机选100个作测试集
+a2 = np.random.choice(len(ls2),size=30,replace=False)
+a3 = np.random.choice(len(ls3),size=40,replace=False)
+
+####### 训练集结构数 #######
+#w1 = list(set(range(1,len(ls1)))-set(a1))[10:-1:30]
+w2 = list(set(range(1,len(ls2)))-set(a2))[10:-1:15]
+w3 = list(set(range(1,len(ls3)))-set(a3))[10:-1:15]
+
+####### 训练集 #######
+ms= MultiSystems()
+#ms.append(ls1.sub_system(w1))
+ms.append(ls2.sub_system(w2))
+ms.append(ls3.sub_system(w3))
+
+ms.to_deepmd_raw('deepmd')
+ms.to_deepmd_npy('deepmd',set_size=5000)
+
+#print('There are %d frames for training' % len(ls1.sub_system(w1)))
+print('There are %d frames for training' % len(ls2.sub_system(w2)))
+print('There are %d frames for training' % len(ls3.sub_system(w3)))
+
+####### 测试集 #######
+v= MultiSystems()
+#v.append(ls1.sub_system(a1))
+v.append(ls2.sub_system(a2))
+v.append(ls3.sub_system(a3))
+
+v.to_deepmd_raw('deepmd_validation')
+v.to_deepmd_npy('deepmd_validation',set_size=300)
+
+#print('There are %d frames for validation' % len(ls1.sub_system(a1)))
+print('There are %d frames for validation' % len(ls2.sub_system(a2)))
+print('There are %d frames for validation' % len(ls3.sub_system(a3)))
+```
+
+
+
+
+- 现在需要修改上述脚本，需求如下：
+
+1. 现在有两条轨迹，分别位于两个目录 dir1 和 dir2，2个tem.out文件也分别位于这两个目录下
+dir1 = 'C:\Users\sun78\Desktop\cp2k_model\80-1_B-slag_dpmd'
+dir2 = 'C:\Users\sun78\Desktop\cp2k_model\80_B-slag\deepmd_aimd\non-equilib-initial-config\5000-steps'
+
+2. 分别打印出两个目录下的轨迹都包含多少帧。
+
+3. dir1 随机抽取 25 帧作为验证集索引（不重复），dir2 随机抽取 35 帧作为验证集索引（不重复），打印出每条轨迹验证集帧数。
+
+4. dir1 其余帧中每 6 帧提取 1 帧作为训练集索引，dir2其余帧中每 8 帧提取 1 帧作为训练集索引，打印出每条轨迹训练集帧数。
+
+5. 根据索引拆分子系统，分别将dir1和dir2中的验证集合并到一起，dir1和dir2中的训练集合并到一起。
+
+6. 保存为 DeepMD-kit 格式。并打印出训练数据包含帧数，验证数据包含帧数，以及相应保存路径。
+
+
+注意：请采用变量赋值的方式管理代码（tem.out所在路径，单条轨迹验证集索引帧数，提取训练集所隔帧数等），提高其可移植性和扩展性，确保代码不仅仅适用于两条轨迹的划分转换，也可以适用于多条轨迹的转换划分。
+
+
+
+## 2. 环境变量
+
+- 需要根据实际情况修改的参数
+
+```py
+# ----- 用户可配置参数 -----
+trajectory_dirs = [
+    r"C:\Users\sun78\Desktop\cp2k_model\80-1_B-slag_dpmd",
+    r"C:\Users\sun78\Desktop\cp2k_model\80_B-slag\deepmd_aimd\non-equilib-initial-config\5000-steps"
+]
+cp2k_output_name = "tem.out"         # 每条轨迹的 CP2K 输出文件名
+fmt = "cp2kdata/md"                  # dpdata 格式
+validation_counts = [25, 35]         # 对应每条轨迹的验证集帧数
+training_intervals = [6, 8]          # 对应每条轨迹的训练集抽帧间隔
+random_seed = 42                     # 随机种子，保证可复现
+```
+
+
+- 输出目录树结构
+
+```
+├── training_data
+    ├── B42O136Si24Ca25
+        ├── set.000
+            ├── box.npy
+            ├── coord.npy
+            ├── energy.npy
+            └── force.npy
+        ├── type.raw
+        └── type_map.raw
+    └── B8O135Si40Ca43
+        ├── set.000
+            ├── box.npy
+            ├── coord.npy
+            ├── energy.npy
+            └── force.npy
+        ├── type.raw
+        └── type_map.raw
+└── validation_data
+    ├── B42O136Si24Ca25
+        ├── set.000
+            ├── box.npy
+            ├── coord.npy
+            ├── energy.npy
+            └── force.npy
+        ├── type.raw
+        └── type_map.raw
+    └── B8O135Si40Ca43
+        ├── set.000
+            ├── box.npy
+            ├── coord.npy
+            ├── energy.npy
+            └── force.npy
+        ├── type.raw
+        └── type_map.raw
+```
 
 
 
