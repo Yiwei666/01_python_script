@@ -725,6 +725,377 @@ done
 ```
 
 
+# 8. 多体系能量相关性绘图
+
+## 1. `08-1_plot_energy_correlation_multi-systems_multi-Pics.py`     
+
+多体系模型预测能量与训练集能量相关性绘图，每个体系绘制一张图
+
+### 1. 编程思路
+
+- `input.json` 内容如下
+
+```json
+{
+  "_comment": " model parameters (silicate melt 1823 K)",
+  "model": {
+    "type_map": ["B", "O", "Si", "Ca"],
+    "descriptor": {
+      "type": "se_e2_a",
+      "sel": "auto",
+      "rcut_smth": 0.50,
+      "rcut": 6.00,
+      "neuron": [25, 50, 100],
+      "resnet_dt": false,
+      "axis_neuron": 16,
+      "seed": 1,
+      "_comment": "that's all"
+    },
+    "fitting_net": {
+      "neuron": [240, 240, 240],
+      "resnet_dt": true,
+      "seed": 1,
+      "_comment": "that's all"
+    },
+    "_comment": "that's all"
+  },
+
+  "learning_rate": {
+    "type": "exp",
+    "decay_steps": 1500,
+    "start_lr": 0.001,
+    "stop_lr": 3.51e-8,
+    "_comment": "that's all"
+  },
+
+  "loss": {
+    "type": "ener",
+    "start_pref_e": 0.02,
+    "limit_pref_e": 1,
+    "start_pref_f": 1000,
+    "limit_pref_f": 1,
+    "start_pref_v": 0,
+    "limit_pref_v": 0,
+    "_comment": "that's all"
+  },
+
+  "training": {
+    "training_data": {
+      "systems": ["../00.data/training_data/B8O135Si40Ca43/",
+                  "../00.data/training_data/B42O136Si24Ca25/"],
+      "batch_size": "auto",
+      "_comment": "that's all"
+    },
+    "validation_data": {
+      "systems": ["../00.data/validation_data/B8O135Si40Ca43/",
+                  "../00.data/validation_data/B42O136Si24Ca25/"],
+      "batch_size": "auto",
+      "numb_btch": 1,
+      "_comment": "that's all"
+    },
+    "numb_steps": 300000,
+    "seed": 10,
+    "disp_file": "lcurve.out",
+    "disp_freq": 1000,
+    "save_freq": 5000,
+    "_comment": "that's all"
+  },
+
+  "_comment": "that's all"
+}
+```
+
+使用上述input.json训练完深度势能模型，需要测试其精度，需要使用下面的脚本来进行能量和力相关性绘图
+
+```py
+import matplotlib
+
+matplotlib.use('Agg')
+
+import dpdata
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+training_systems = dpdata.LabeledSystem(
+    "../00.data/training_data/B8O135Si40Ca43",
+    fmt="deepmd/npy"
+)
+predict = training_systems.predict(
+    "../01.train/graph.pb"
+)
+
+
+plt.scatter(training_systems["energies"], predict["energies"])
+x_range = np.linspace(plt.xlim()[0], plt.xlim()[1])
+plt.plot(x_range, x_range, "r--", linewidth=0.25)
+plt.xlabel("Energy of DFT")
+plt.ylabel("Energy predicted by deep potential")
+
+
+plt.tight_layout()
+plt.savefig("energy_scatter_B8O135Si40Ca43.png", dpi=300)
+```
+
+
+
+```py
+import matplotlib
+
+matplotlib.use('Agg')
+
+import dpdata
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+training_systems = dpdata.LabeledSystem(
+    "../00.data/training_data/B42O136Si24Ca25",
+    fmt="deepmd/npy"
+)
+predict = training_systems.predict(
+    "../01.train/graph.pb"
+)
+
+
+plt.scatter(training_systems["energies"], predict["energies"])
+x_range = np.linspace(plt.xlim()[0], plt.xlim()[1])
+plt.plot(x_range, x_range, "r--", linewidth=0.25)
+plt.xlabel("Energy of DFT")
+plt.ylabel("Energy predicted by deep potential")
+
+
+plt.tight_layout()
+plt.savefig("energy_scatter_B42O136Si24Ca25.png", dpi=300)
+
+```
+
+
+由于训练集 `'../00.data/training_data/'` 路径下有两个体系，修改路径参数并使用两个脚本绘图会比较繁琐，能否修改上述脚本，查找`'../00.data/training_data/'` 路径下的一级子文件夹/体系有哪些，然后获取对每个体系的预测数据，最后将不同体系的预测数据绘制在一张图中。输出修改后的完整python脚本。
+
+
+由于训练集 `'../00.data/training_data/'` 路径下有两个体系，修改路径参数并使用两个脚本绘图会比较繁琐，能否修改上述脚本，查找`'../00.data/training_data/'` 路径下的一级子文件夹/体系有哪些，然后获取对每个体系依次绘图，保存的png文件名需要标注相应的子文件夹名。输出修改后的完整python脚本。
+
+
+
+
+## 2. `08-2_plot_energy_correlation_multi-systems_one-Pic.py`             
+
+多体系模型预测能量与训练集能量相关性绘图，将所有体系绘制一张图中
+
+### 1. 编程思路
+
+见上
+
+
+
+
+# 9. 多体系力相关性绘图
+
+
+## 1. 09-1_plot_force_correlation__multi-systems_multi-Pics.py          
+
+多体系模型预测力分量与训练集力分量相关性绘图，每个体系绘制xyz分量3张图
+
+### 1. 编程思路
+
+- `input.json` 内容如下
+
+```json
+{
+  "_comment": " model parameters (silicate melt 1823 K)",
+  "model": {
+    "type_map": ["B", "O", "Si", "Ca"],
+    "descriptor": {
+      "type": "se_e2_a",
+      "sel": "auto",
+      "rcut_smth": 0.50,
+      "rcut": 6.00,
+      "neuron": [25, 50, 100],
+      "resnet_dt": false,
+      "axis_neuron": 16,
+      "seed": 1,
+      "_comment": "that's all"
+    },
+    "fitting_net": {
+      "neuron": [240, 240, 240],
+      "resnet_dt": true,
+      "seed": 1,
+      "_comment": "that's all"
+    },
+    "_comment": "that's all"
+  },
+
+  "learning_rate": {
+    "type": "exp",
+    "decay_steps": 1500,
+    "start_lr": 0.001,
+    "stop_lr": 3.51e-8,
+    "_comment": "that's all"
+  },
+
+  "loss": {
+    "type": "ener",
+    "start_pref_e": 0.02,
+    "limit_pref_e": 1,
+    "start_pref_f": 1000,
+    "limit_pref_f": 1,
+    "start_pref_v": 0,
+    "limit_pref_v": 0,
+    "_comment": "that's all"
+  },
+
+  "training": {
+    "training_data": {
+      "systems": ["../00.data/training_data/B8O135Si40Ca43/",
+                  "../00.data/training_data/B42O136Si24Ca25/"],
+      "batch_size": "auto",
+      "_comment": "that's all"
+    },
+    "validation_data": {
+      "systems": ["../00.data/validation_data/B8O135Si40Ca43/",
+                  "../00.data/validation_data/B42O136Si24Ca25/"],
+      "batch_size": "auto",
+      "numb_btch": 1,
+      "_comment": "that's all"
+    },
+    "numb_steps": 300000,
+    "seed": 10,
+    "disp_file": "lcurve.out",
+    "disp_freq": 1000,
+    "save_freq": 5000,
+    "_comment": "that's all"
+  },
+
+  "_comment": "that's all"
+}
+```
+
+
+使用上述input.json训练完深度势能模型，需要测试其精度，需要使用下面的脚本来进行力相关性绘图
+
+
+
+```py
+import matplotlib
+matplotlib.use('Agg')
+
+import dpdata
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 1. 读取数据
+training_systems = dpdata.LabeledSystem(
+    "../00.data/training_data/B8O135Si40Ca43",
+    fmt="deepmd/npy"
+)
+predict = training_systems.predict(
+    "../01.train/graph.pb"
+)
+
+# 2. 拿到参考和预测的力张量，形状 (n_frames, n_atoms, 3)
+ref_forces = training_systems["forces"]
+pred_forces = predict["forces"]
+
+# 3. 对每个分量循环：0->x, 1->y, 2->z
+components = ["x", "y", "z"]
+for i, comp in enumerate(components):
+    # 展平成一维数组
+    ref = ref_forces[:, :, i].ravel()
+    pred = pred_forces[:, :, i].ravel()
+
+    # 新开一个 figure
+    plt.figure()
+    plt.scatter(ref, pred, s=1, alpha=0.5)
+    
+    # 画 y=x 参考线
+    lo = min(ref.min(), pred.min())
+    hi = max(ref.max(), pred.max())
+    plt.plot([lo, hi], [lo, hi], "r--", linewidth=0.25)
+
+    # 标签与单位
+    plt.xlabel(f"DFT Force ({comp}) (eV/Å)")
+    plt.ylabel(f"Predicted Force ({comp}) (eV/Å)")
+    plt.title(f"Force correlation: {comp}-component")
+
+    # 紧凑布局、保存
+    plt.tight_layout()
+    plt.savefig(f"force_{comp}_scatter_B8O135Si40Ca43.png", dpi=300)
+    plt.close()
+```
+
+
+
+
+```py
+import matplotlib
+matplotlib.use('Agg')
+
+import dpdata
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 1. 读取数据
+training_systems = dpdata.LabeledSystem(
+    "../00.data/training_data/B42O136Si24Ca25",
+    fmt="deepmd/npy"
+)
+predict = training_systems.predict(
+    "../01.train/graph.pb"
+)
+
+# 2. 拿到参考和预测的力张量，形状 (n_frames, n_atoms, 3)
+ref_forces = training_systems["forces"]
+pred_forces = predict["forces"]
+
+# 3. 对每个分量循环：0->x, 1->y, 2->z
+components = ["x", "y", "z"]
+for i, comp in enumerate(components):
+    # 展平成一维数组
+    ref = ref_forces[:, :, i].ravel()
+    pred = pred_forces[:, :, i].ravel()
+
+    # 新开一个 figure
+    plt.figure()
+    plt.scatter(ref, pred, s=1, alpha=0.5)
+    
+    # 画 y=x 参考线
+    lo = min(ref.min(), pred.min())
+    hi = max(ref.max(), pred.max())
+    plt.plot([lo, hi], [lo, hi], "r--", linewidth=0.25)
+
+    # 标签与单位
+    plt.xlabel(f"DFT Force ({comp}) (eV/Å)")
+    plt.ylabel(f"Predicted Force ({comp}) (eV/Å)")
+    plt.title(f"Force correlation: {comp}-component")
+
+    # 紧凑布局、保存
+    plt.tight_layout()
+    plt.savefig(f"force_{comp}_scatter_B42O136Si24Ca25.png", dpi=300)
+    plt.close()
+```
+
+
+由于训练集 '../00.data/training_data/' 路径下有两个体系，修改路径参数并使用两个脚本绘图会比较繁琐，能否修改上述脚本，查找'../00.data/training_data/' 路径下的一级子文件夹/体系有哪些，然后获取对每个体系的预测数据，最后将不同体系的x, y, z 预测数据分别绘制在一张图中（不同体系x分量绘制在一张图，y分量绘制在一张图，z分量绘制在一张图）。输出修改后的完整python脚本。
+
+
+
+由于训练集 '../00.data/training_data/' 路径下有两个体系，修改路径参数并使用两个脚本绘图会比较繁琐，能否修改上述脚本，查找'../00.data/training_data/' 路径下的一级子文件夹/体系有哪些，然后获取对每个体系依次绘图，保存的png文件名需要标注相应的子文件夹名。输出修改后的完整python脚本。
+
+
+
+
+
+
+## 2. 09-2_plot_force_correlation_multi-systems_one-Pic.py              
+
+多体系模型预测力分量与训练集力分量相关性绘图，将所有体系x分量绘于一张图，y分量绘于一张图，z分量绘于一张图
+
+### 1. 编程思路
+
+见上
+
+
 
 
 
