@@ -15,6 +15,7 @@
 05-2_plot_force_correlation.py                   # 力(xyz分量)预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
 06-1_split_cp2k_multi-trajectories_o3_one-process.py              # 适用于多个体系/组分训练集和验证集的划分，所有体系中均满足 print_level 为medium，且frc单位为 hartree/bohr
 06-2_split_cp2k_multi-trajectories_mix_N_systems_Si-slag.py       # 适用于多个体系/组分训练集和验证集的划分，部分体系可以为 print_level low，且frc单位可以为 [amu·Å/fs²]，但在调用本脚本前需转换。注意：1 [amu·Å/fs²] = 2.015529556643 [Hartree/Bohr]
+07_dptest_multi-systems.sh                       # dptest 测试模型在多个体系上的精度，注：模型训练集中包含多个组成不同的体系
 ```
 
 
@@ -602,8 +603,122 @@ validation_out_dir = "./00.data/validation_data"
 ```
 
 
+# 7. `07_dptest_multi-systems.sh` 多体系dp test模型精度测试
+
+### 1. 编程思路
+
+- `input.json` 内容如下
+
+```json
+{
+  "_comment": " model parameters (silicate melt 1823 K)",
+  "model": {
+    "type_map": ["B", "O", "Si", "Ca"],
+    "descriptor": {
+      "type": "se_e2_a",
+      "sel": "auto",
+      "rcut_smth": 0.50,
+      "rcut": 6.00,
+      "neuron": [25, 50, 100],
+      "resnet_dt": false,
+      "axis_neuron": 16,
+      "seed": 1,
+      "_comment": "that's all"
+    },
+    "fitting_net": {
+      "neuron": [240, 240, 240],
+      "resnet_dt": true,
+      "seed": 1,
+      "_comment": "that's all"
+    },
+    "_comment": "that's all"
+  },
+
+  "learning_rate": {
+    "type": "exp",
+    "decay_steps": 1500,
+    "start_lr": 0.001,
+    "stop_lr": 3.51e-8,
+    "_comment": "that's all"
+  },
+
+  "loss": {
+    "type": "ener",
+    "start_pref_e": 0.02,
+    "limit_pref_e": 1,
+    "start_pref_f": 1000,
+    "limit_pref_f": 1,
+    "start_pref_v": 0,
+    "limit_pref_v": 0,
+    "_comment": "that's all"
+  },
+
+  "training": {
+    "training_data": {
+      "systems": ["../00.data/training_data/B8O135Si40Ca43/",
+                  "../00.data/training_data/B42O136Si24Ca25/"],
+      "batch_size": "auto",
+      "_comment": "that's all"
+    },
+    "validation_data": {
+      "systems": ["../00.data/validation_data/B8O135Si40Ca43/",
+                  "../00.data/validation_data/B42O136Si24Ca25/"],
+      "batch_size": "auto",
+      "numb_btch": 1,
+      "_comment": "that's all"
+    },
+    "numb_steps": 300000,
+    "seed": 10,
+    "disp_file": "lcurve.out",
+    "disp_freq": 1000,
+    "save_freq": 5000,
+    "_comment": "that's all"
+  },
+
+  "_comment": "that's all"
+}
+```
+
+使用上述input.json训练完深度势能模型，需要测试其精度，需要使用下面的语句来进行测试，
+
+```sh
+source /public21/home/sc90511/deepmd-kit/bin/activate
+dp test -m graph.pb -s ../00.data/validation_data/B8O135Si40Ca43 > dptest.out 2>&1
+dp test -m graph.pb -s ../00.data/validation_data/B42O136Si24Ca25 > dptest.out 2>&1
+```
+
+能不能编写一个bash脚本来实现，首先查找 ../00.data/validation_data/ 路径下的一级子文件夹有哪些，然后依次对每个子文件夹执行 dp test 命令，将输出结果追加到 dptest.out 文件中，输出修改后的完整bash脚本
 
 
+
+### 2. 实现脚本
+
+
+`07_dptest_multi-systems.sh`
+
+
+```sh
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Activate DeepMD‑kit Python environment
+source /public21/home/sc90511/deepmd-kit/bin/activate
+
+# Directory containing validation data subfolders
+VAL_DIR="../00.data/validation_data"
+
+# Output file (will append results)
+OUTPUT_FILE="dptest.out"
+
+# Iterate over each first‑level subdirectory in VAL_DIR
+for subdir in "$VAL_DIR"/*/; do
+    if [ -d "$subdir" ]; then
+        echo "=== Testing system: ${subdir##*/} ===" >> "$OUTPUT_FILE"
+        dp test -m graph.pb -s "$subdir" >> "$OUTPUT_FILE" 2>&1
+        echo "" >> "$OUTPUT_FILE"
+    fi
+done
+```
 
 
 
