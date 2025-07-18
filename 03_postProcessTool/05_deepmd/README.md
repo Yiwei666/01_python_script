@@ -15,7 +15,11 @@
 05-2_plot_force_correlation.py                   # 力(xyz分量)预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
 06-1_split_cp2k_multi-trajectories_o3_one-process.py              # 适用于多个体系/组分训练集和验证集的划分，所有体系中均满足 print_level 为medium，且frc单位为 hartree/bohr
 06-2_split_cp2k_multi-trajectories_mix_N_systems_Si-slag.py       # 适用于多个体系/组分训练集和验证集的划分，部分体系可以为 print_level low，且frc单位可以为 [amu·Å/fs²]，但在调用本脚本前需转换。注意：1 [amu·Å/fs²] = 2.015529556643 [Hartree/Bohr]
-07_dptest_multi-systems.sh                       # dptest 测试模型在多个体系上的精度，注：模型训练集中包含多个组成不同的体系
+07_dptest_multi-systems.sh                                        # dptest 测试模型在多个体系上的精度，注：模型训练集中包含多个组成不同的体系
+08-1_plot_energy_correlation_multi-systems_multi-Pics.py          # 多体系模型预测能量与训练集能量相关性绘图，每个体系绘制一张图
+08-2_plot_energy_correlation_multi-systems_one-Pic.py             # 多体系模型预测能量与训练集能量相关性绘图，将所有体系绘制一张图中
+09-1_plot_force_correlation__multi-systems_multi-Pics.py          # 多体系模型预测力分量与训练集力分量相关性绘图，每个体系绘制xyz分量3张图
+09-2_plot_force_correlation_multi-systems_one-Pic.py              # 多体系模型预测力分量与训练集力分量相关性绘图，将所有体系x分量绘于一张图，y分量绘于一张图，z分量绘于一张图
 ```
 
 
