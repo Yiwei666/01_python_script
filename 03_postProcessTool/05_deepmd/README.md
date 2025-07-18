@@ -13,7 +13,8 @@
 04-3_ySemi_plot_lcurve.py                        # X 轴线性、Y 轴对数刻度（plt.semilogy），强调损失值的指数级变化，而保留步数的线性分布
 05-1_plot_energy_correlation.py                  # 能量预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
 05-2_plot_force_correlation.py                   # 力(xyz分量)预测，该脚本在超算上进行绘图，绘图前请加载 deepmd-kit 虚拟环境
-06-1_split_cp2k_multi-trajectories_o3_one-process.py        # 适用于多个体系/组分训练集和验证集的划分
+06-1_split_cp2k_multi-trajectories_o3_one-process.py              # 适用于多个体系/组分训练集和验证集的划分，所有体系中均满足 print_level 为medium，且frc单位为 hartree/bohr
+06-2_split_cp2k_multi-trajectories_mix_N_systems_Si-slag.py       # 适用于多个体系/组分训练集和验证集的划分，部分体系可以为 print_level low，且frc单位可以为 [amu·Å/fs²]，但在调用本脚本前需转换。注意：1 [amu·Å/fs²] = 2.015529556643 [Hartree/Bohr]
 ```
 
 
