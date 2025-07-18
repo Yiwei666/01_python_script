@@ -546,10 +546,10 @@ dp = dpdata.LabeledSystem(cp2kmd_dir, cp2k_output_name=cp2kmd_output_name, cells
 
 注意修改：
 
-- traj_dir 日志、轨迹等文件所在路径
-- val_count 验证集帧数
-- interval 除掉验证集外提取一帧训练集间隔的帧数，需提前计算好训练集大小
-- cells 盒子变长，针对print level为low的情况，往往需要将frc单位提前转换
+- `traj_dir`  日志、轨迹等文件所在路径
+- `val_count` 验证集帧数
+- `interval`  除掉验证集外提取一帧训练集间隔的帧数，需提前计算好训练集大小
+- `cells`     盒子边长，针对`print level`为`low`的情况，往往需要将frc单位提前转换
 
 
 
