@@ -198,12 +198,19 @@ X 轴线性、Y 轴对数刻度（plt.semilogy），强调损失值的指数级�
 
 
 
-# 6. `06-1_split_cp2k_multi-trajectories_o3_one-process.py `
+
+
+# 6. 多条aimd轨迹转换
+
+
+## 1. `06-1_split_cp2k_multi-trajectories_o3_one-process.py `
 
 [06-1_split_cp2k_multi-trajectories_o3_one-process.py ](06-1_split_cp2k_multi-trajectories_o3_one-process.py )
 
+适用于多个体系/组分训练集和验证集的划分，所有体系中均满足 print_level 为medium，且frc单位为 hartree/bohr
 
-## 1. 编程思路
+
+### 1. 编程思路
 
 - 单条xyz轨迹划分脚本
 
@@ -324,8 +331,10 @@ print('There are %d frames for validation' % len(ls3.sub_system(a3)))
 - 现在需要修改上述脚本，需求如下：
 
 1. 现在有两条轨迹，分别位于两个目录 dir1 和 dir2，2个tem.out文件也分别位于这两个目录下
+```
 dir1 = 'C:\Users\sun78\Desktop\cp2k_model\80-1_B-slag_dpmd'
 dir2 = 'C:\Users\sun78\Desktop\cp2k_model\80_B-slag\deepmd_aimd\non-equilib-initial-config\5000-steps'
+```
 
 2. 分别打印出两个目录下的轨迹都包含多少帧。
 
@@ -342,7 +351,7 @@ dir2 = 'C:\Users\sun78\Desktop\cp2k_model\80_B-slag\deepmd_aimd\non-equilib-init
 
 
 
-## 2. 环境变量
+### 2. 环境变量
 
 - 需要根据实际情况修改的参数
 
@@ -399,6 +408,198 @@ random_seed = 42                     # 随机种子，保证可复现
         └── type_map.raw
 ```
 
+
+
+## 2. `06-2_split_cp2k_multi-trajectories_mix_N_systems_Si-slag.py`
+
+[06-2_split_cp2k_multi-trajectories_mix_N_systems_Si-slag.py](06-2_split_cp2k_multi-trajectories_mix_N_systems_Si-slag.py)
+
+适用于多个体系/组分训练集和验证集的划分，部分体系可以为 print_level low，且frc单位可以为 [amu·Å/fs²]，但在调用本脚本前需转换。注意：1 [amu·Å/fs²] = 2.015529556643 [Hartree/Bohr]
+
+
+### 1. 编程思路
+
+
+`06-1_split_cp2k_multi-trajectories_o3_one-process.py` 脚本如下
+
+```py
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Multi‐trajectory DeepMD‑kit data preparation:
+– 分别读取多个 CP2K AIMD 输出（tem.out）轨迹
+– 随机抽取指定帧数作为验证集
+– 按指定间隔抽取训练集
+– 合并各轨迹的训练/验证子系统
+– 保存为 DeepMD‑kit 支持的 npy 格式
+"""
+
+import os
+import numpy as np
+from dpdata import LabeledSystem, MultiSystems
+
+# ----- 用户可配置参数 -----
+trajectory_dirs = [
+    r"C:\Users\sun78\Desktop\cp2k_model\80-1_B-slag_dpmd",
+    r"C:\Users\sun78\Desktop\cp2k_model\80_B-slag\deepmd_aimd\non-equilib-initial-config\5000-steps"
+]
+cp2k_output_name = "tem.out"         # 每条轨迹的 CP2K 输出文件名
+fmt = "cp2kdata/md"                  # dpdata 格式
+validation_counts = [100, 100]         # 对应每条轨迹的验证集帧数
+training_intervals = [10, 10]          # 对应每条轨迹的训练集抽帧间隔
+random_seed = 42                     # 随机种子，保证可复现
+
+training_out_dir = "./00.data/training_data"
+validation_out_dir = "./00.data/validation_data"
+
+# 检查参数长度一致性
+assert len(trajectory_dirs) == len(validation_counts) == len(training_intervals), \
+    "trajectory_dirs、validation_counts、training_intervals 三个列表长度必须相同"
+
+# 创建输出目录
+os.makedirs(training_out_dir, exist_ok=True)
+os.makedirs(validation_out_dir, exist_ok=True)
+
+# 初始化 MultiSystems 容器
+ms_train = MultiSystems()
+ms_validation = MultiSystems()
+
+# 计数器，用于最终汇总
+total_train_frames = 0
+total_validation_frames = 0
+
+# 固定随机种子
+np.random.seed(random_seed)
+
+for traj_dir, val_count, interval in zip(trajectory_dirs, validation_counts, training_intervals):
+    # 1. 读取单条轨迹
+    ls = LabeledSystem(traj_dir, cp2k_output_name=cp2k_output_name, fmt=fmt)
+    total_frames = len(ls)
+    print(f"# 轨迹目录: {traj_dir}")
+    print(f"# 总帧数: {total_frames}")
+
+    # 2. 随机抽取验证集索引
+    val_idx = np.random.choice(total_frames, size=val_count, replace=False)
+    val_idx_sorted = sorted(val_idx)
+    print(f"# 验证集索引（共 {len(val_idx_sorted)} 帧）：{val_idx_sorted}")
+
+    # 3. 剩余帧中按间隔抽取训练集索引
+    remaining = sorted(set(range(total_frames)) - set(val_idx))
+    train_idx = remaining[::interval]
+    print(f"# 训练集索引（每隔 {interval} 帧，共 {len(train_idx)} 帧）：{train_idx}\n")
+
+    # 累加计数
+    total_validation_frames += len(val_idx)
+    total_train_frames += len(train_idx)
+
+    # 4. 拆分并添加到 MultiSystems
+    ms_validation.append(ls.sub_system(val_idx))
+    ms_train.append(ls.sub_system(train_idx))
+
+# 5. 保存为 DeepMD‑kit npy 格式
+ms_train.to_deepmd_npy(training_out_dir)
+ms_validation.to_deepmd_npy(validation_out_dir)
+
+# 6. 打印最终汇总
+print(f"# 训练数据包含 {total_train_frames} 帧，已保存到 \"{training_out_dir}\"")
+print(f"# 验证数据包含 {total_validation_frames} 帧，已保存到 \"{validation_out_dir}\"")
+```
+
+
+上述`06-1_split_cp2k_multi-trajectories_o3_one-process.py`脚本适用于 均采用 `ls = LabeledSystem(traj_dir, cp2k_output_name=cp2k_output_name, fmt=fmt)` 命令读取单条轨迹的情况，如果还有另外一条或者多条轨迹采用如下方式读取，上述代码该如何修改呢？下面是两外两条采用其他方式读取。
+
+```py
+import os
+import dpdata
+import numpy as np
+
+cp2kmd_dir = r"C:\Users\sun78\Desktop\cp2k_model\63_SiB\dpdata-temp"
+cp2kmd_output_name = None
+
+cells = np.array([[9.34477,0,0],
+                [0,9.34477,0],
+                [0,0,9.34477]])
+dp = dpdata.LabeledSystem(cp2kmd_dir, cp2k_output_name=cp2kmd_output_name, cells=cells, ensemble_type="NVT", fmt="cp2kdata/md")
+```
+
+
+```py
+import os
+import dpdata
+import numpy as np
+
+cp2kmd_dir = r"C:\Users\sun78\Desktop\cp2k_model\64_B2O3\dpdata-temp"
+cp2kmd_output_name = None
+
+cells = np.array([[9.402,0,0],
+                [0,9.402,0],
+                [0,0,9.402]])
+dp = dpdata.LabeledSystem(cp2kmd_dir, cp2k_output_name=cp2kmd_output_name, cells=cells, ensemble_type="NVT", fmt="cp2kdata/md")
+```
+
+
+如何将上述轨迹读取方式整合到最上面的python代码中，使得python代码具有更好的健壮性，支持更多的轨迹读取方式呢？输出修改后的完整代码。
+
+
+
+### 2. 环境变量
+
+注意修改：
+
+- traj_dir 日志、轨迹等文件所在路径
+- val_count 验证集帧数
+- interval 除掉验证集外提取一帧训练集间隔的帧数，需提前计算好训练集大小
+- cells 盒子变长，针对print level为low的情况，往往需要将frc单位提前转换
+
+
+
+```py
+# ----- 用户可配置参数 -----
+trajectory_configs = [
+    # 普通 CP2K 输出轨迹
+    {
+        "traj_dir": r"C:\Users\sun78\Desktop\cp2k_model\80-1_B-slag_dpmd",
+        "cp2k_output_name": "tem.out",
+        "fmt": "cp2kdata/md",
+        "val_count": 100,
+        "interval": 10,
+    },
+    {
+        "traj_dir": r"C:\Users\sun78\Desktop\cp2k_model\80_B-slag\deepmd_aimd\non-equilib-initial-config\5000-steps",
+        "cp2k_output_name": "tem.out",
+        "fmt": "cp2kdata/md",
+        "val_count": 100,
+        "interval": 10,
+    },
+    # 需要指定 cell 矩阵和 ensemble_type
+    {
+        "traj_dir": r"C:\Users\sun78\Desktop\cp2k_model\63_SiB\dpdata-temp",
+        "cp2k_output_name": None,
+        "cells": np.array([[9.34477, 0, 0],
+                           [0, 9.34477, 0],
+                           [0, 0, 9.34477]]),
+        "ensemble_type": "NVT",
+        "fmt": "cp2kdata/md",
+        "val_count": 100,
+        "interval": 10,
+    },
+    {
+        "traj_dir": r"C:\Users\sun78\Desktop\cp2k_model\64_B2O3\dpdata-temp",
+        "cp2k_output_name": None,
+        "cells": np.array([[9.402, 0, 0],
+                           [0, 9.402, 0],
+                           [0, 0, 9.402]]),
+        "ensemble_type": "NVT",
+        "fmt": "cp2kdata/md",
+        "val_count": 100,
+        "interval": 10,
+    }
+]
+
+random_seed = 42
+training_out_dir = "./00.data/training_data"
+validation_out_dir = "./00.data/validation_data"
+```
 
 
 
