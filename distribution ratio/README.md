@@ -20,6 +20,7 @@
 06_X-O两相平均配位数及杂质原子两相分布和平均氧化程度k计算.py
 04_LCSC分离模型(B分配计算).py
 05_分配比与两相平均配位数和渣相配位数关系.py
+05-2_分配比与两相平均配位数关系.py                               # 分配比（非对数值）与两相平均配位数关系，绘图并保存数据点
 ```
 
 
@@ -383,6 +384,53 @@ X两相平均氧化程度，k值，即X-O两相配位数/硅酸盐X-O配位数: 
 `05_分配比与两相平均配位数和渣相配位数关系.py`脚本基于 `两相X-O平均配位数 / 渣相X-O平均配位数` 来计算分配比，通过该比值可以计算两相模拟平衡后进入到渣相的杂质原子数（或剩余在硅相的杂质原子数）进而计算出分配比
 
 
+
+### 3. `05-2_分配比与两相平均配位数关系.py`
+
+绘制分配比与两相平均配位数关系曲线，并保存数据到 `Lx_CN-ave.dat` 文件。
+
+
+**1. 编程思路**
+
+```
+
+L_X = \frac{E_X}{N_X - E_X}\cdot
+\frac{\left(N_{\mathrm{Si}} + \tfrac{y}{4} E_X\right) M_{\mathrm{Si}} + (N_X - E_X) M_X}
+{N_{\mathrm{SiO_2}} M_{\mathrm{SiO_2}} + N_{\mathrm{CaO}} M_{\mathrm{CaO}} - \tfrac{y}{4} E_X M_{\mathrm{Si}} + E_X M_X}
+
+
+
+E_X = \frac{CN^{X\!-\!O}_{\mathrm{average}}}{CN^{X\!-\!O}_{\mathrm{silicate}}}\, N_X
+
+```
+
+请基于上述2个公式
+
+```py
+y = 5        # 杂质原子在渣中稳定价态
+N_X = 8      # 硅相初始杂质原子B数
+N_Si = 42     # 初始硅相Si原子数
+N_SiO2 = 40    # SiO2摩尔数
+N_CaO = 43       # 各碱性氧化物摩尔数，示例值
+
+M_SiO2 = 60.0843   # SiO2相对分子质量
+M_CaO = 56.0774    # 各碱性氧化物相对分子质量，示例值
+M_Si = 28.0855                # Si相对原子质量
+CN_silicate_X−O = 3.87  # 硅酸盐相中的平均配位数
+
+```
+已知上面这些参数，现在我需要绘制 L_x 随 `CN_average_X−O` 的变化曲线，已知 `CN_average_X−O` 取值范围是 0 到 10，取值间隔为 0.05。
+
+
+**2. 环境变量**
+
+```py
+# 需要修改的参数
+y = 4                 # stable valence of impurity in slag
+CN_silicate_XO = 4.71 # average CN in silicate
+M_X    = 47.87       # atomic mass of impurity X (B)
+CN_avg = np.arange(0.0, 10.05 + 0.05, 0.05)  # 0..10 step 0.05
+```
 
 
 
