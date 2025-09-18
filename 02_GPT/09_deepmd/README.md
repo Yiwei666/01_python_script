@@ -15,6 +15,6 @@
 
 # 2. 数据处理脚本
 
-- 参考目录 `01_python_script/03_postProcessTool/05_deepmd`
+- 参考目录 [01_python_script/03_postProcessTool/05_deepmd](https://github.com/Yiwei666/01_python_script/tree/main/03_postProcessTool/05_deepmd)
 
 
