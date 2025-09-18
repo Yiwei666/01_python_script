@@ -12,3 +12,9 @@
 10. [dpdata 的 CP2KData 插件](/02_GPT/09_deepmd/9-010.md)
 11. [cp2kdata源码分析](/02_GPT/09_deepmd/9-011.md)
 
+
+# 2. 数据处理脚本
+
+- 参考目录 `01_python_script/03_postProcessTool/05_deepmd`
+
+
